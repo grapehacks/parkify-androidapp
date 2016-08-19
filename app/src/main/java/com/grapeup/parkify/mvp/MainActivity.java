@@ -1,7 +1,9 @@
-package com.grapeup.parkify;
+package com.grapeup.parkify.mvp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.grapeup.parkify.R;
 
 public class MainActivity extends AppCompatActivity {
 
