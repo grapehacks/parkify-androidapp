@@ -44,7 +44,7 @@ dependencies {
     dependencies {
         compile 'com.mikepenz:iconics-core:2.8.0@aar'
     }
-    compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
+    compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
     // REST
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
