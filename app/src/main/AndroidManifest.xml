@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.grapeup.parkify">
+          package="com.grapeup.parkify">
 
     <application
         android:allowBackup="true"
@@ -10,10 +10,15 @@
         android:theme="@style/AppTheme">
         <activity android:name=".mvp.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".mvp.login.LoginActivity">
+        </activity>
+        <activity android:name=".mvp.choice.ChoiceActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
