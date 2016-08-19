@@ -6,4 +6,9 @@
     <string name="login">Login</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
+    <string name="sign_out">Wyloguj</string>
+    <string name="settings">Ustawienia</string>
+    <string name="message">Wiadomości</string>
+    <string name="date_of_closest_draw">Data najbliższego losowania</string>
+    <string name="button_result">Zapisano</string>
 </resources>

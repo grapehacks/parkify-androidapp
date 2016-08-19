@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <at.markushi.ui.CircleButton
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:src="@drawable/grape_logo"
+            app:cb_color="#ca7d7d"
+            app:cb_pressedRingWidth="8dip"
+            android:layout_weight="0.38" />
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:text="@string/date_of_closest_draw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            tools:text="Data najbliższego losowania"
+            android:textAlignment="center" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/date_layout"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <ImageView
+                    android:id="@+id/date_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="false" />
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="23-08-2016"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="175dp"
+                android:layout_height="wrap_content"
+                android:text="@string/button_result"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/date_layout"
+                android:background="@drawable/button_notsaved"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center">
+
+            <TextView
+                android:text="Powered by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView4"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textStyle="normal|bold"
+                android:paddingRight="4dp"/>
+
+            <ImageView
+                android:layout_width="98dp"
+                android:layout_height="18dp"
+                app:srcCompat="@drawable/grape_logo"
+                android:id="@+id/imageView2" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
