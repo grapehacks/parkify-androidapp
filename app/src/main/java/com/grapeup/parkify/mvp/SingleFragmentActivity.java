@@ -20,6 +20,7 @@ import android.view.View;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.mvp.login.LoginActivity;
+import com.grapeup.parkify.mvp.messages.MessagesActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsCompatButton;
@@ -95,12 +96,23 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         View messagesView = baseInflater.inflate(R.layout.item_messages, null);
         IconicsCompatButton messagesBtn = (IconicsCompatButton) messagesView.findViewById(R.id.iconic_btn_messages);
         messagesBtn.setBackground(new IconicsDrawable(this, "faw_commenting"));
+        messagesBtn.setOnClickListener(SHOW_MESSAGES_LISTENER);
         messagesView.setPadding(0,12,24,12);
         MenuItem messages = menu.findItem(R.id.menu_messages);
         messages.setActionView(messagesView);
 
         return true;
     }
+
+    private final View.OnClickListener SHOW_MESSAGES_LISTENER = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String token = UserDataHelper.getToken(SingleFragmentActivity.this);
+            Intent intent = new Intent(SingleFragmentActivity.this, MessagesActivity.class);
+            intent.putExtra("token", token);
+            startActivity(intent);
+        }
+    };
 
     private final View.OnClickListener SIGN_OUT_LISTENER = new View.OnClickListener() {
         @Override

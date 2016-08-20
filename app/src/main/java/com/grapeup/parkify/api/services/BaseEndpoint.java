@@ -29,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *
  * @author Pavlo Tymchuk
  */
-public abstract class BaseEndpoint<T extends BaseDto> {
+public abstract class BaseEndpoint<T> {
     private EndpointAPI mEndpointAPI;
 
     public BaseEndpoint(EndpointAPI api) {

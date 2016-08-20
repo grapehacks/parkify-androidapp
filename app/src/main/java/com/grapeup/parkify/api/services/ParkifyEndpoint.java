@@ -14,7 +14,7 @@ import okhttp3.RequestBody;
  *
  * @author Pavlo Tymchuk
  */
-public abstract class ParkifyEndpoint<T extends BaseDto> extends BaseEndpoint<T> {
+public abstract class ParkifyEndpoint<T> extends BaseEndpoint<T> {
     private String email;
     private String password;
     private String token;
