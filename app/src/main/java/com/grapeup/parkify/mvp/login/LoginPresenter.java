@@ -5,5 +5,5 @@ import com.grapeup.parkify.mvp.Presenter;
 
 public interface LoginPresenter extends Presenter<LoginView> {
 
-    void login(String username, String password);
+    void login(String email, String password);
 }

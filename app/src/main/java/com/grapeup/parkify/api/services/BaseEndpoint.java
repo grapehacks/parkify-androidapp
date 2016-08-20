@@ -9,7 +9,11 @@ import com.grapeup.parkify.api.EndpointAPI;
 import com.grapeup.parkify.api.dto.BaseDto;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -39,13 +43,22 @@ public abstract class BaseEndpoint<T extends BaseDto> {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        okHttpClientBuilder.interceptors().add(interceptor);
         okHttpClientBuilder.interceptors().add(getInterceptor());
         OkHttpClient client = okHttpClientBuilder.build();
 
         // date deserializer
         final GsonBuilder gsonBuilder = new GsonBuilder();
+        DateFormat original = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH );
         JsonDeserializer<Date> dateJsonDeserializer =
-                (json, typeOfT, context) -> new Date(Long.valueOf(json.getAsString()) * 1000);
+                (json, typeOfT, context) -> {
+                    Date date = new Date();
+                    try {
+                        date = original.parse(json.getAsString());
+                    } catch (ParseException e) {
+                    }
+                    return date;
+                };
         gsonBuilder.registerTypeAdapter(Date.class, dateJsonDeserializer);
 
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()

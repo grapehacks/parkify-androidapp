@@ -1,16 +1,38 @@
 package com.grapeup.parkify.mvp.login;
 
-import android.widget.Toast;
-
+import com.grapeup.parkify.api.dto.UserDto;
+import com.grapeup.parkify.api.services.login.LoginModel;
+import com.grapeup.parkify.api.services.login.LoginModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
+
+import rx.Observer;
 
 public class LoginPresenterImpl extends BasePresenter<LoginView> implements LoginPresenter{
 
-    private LoginModel mLoginModel;
+    private LoginModel loginModel;
+
+    public LoginPresenterImpl() {
+        loginModel = new LoginModelImpl();
+    }
 
     @Override
-    public void login(String username, String password) {
-        getView().onLoginFailed();
+    public void login(String email, String password) {
+        loginModel.login(email, password).subscribe(new Observer<UserDto>() {
+            @Override
+            public void onCompleted() {
+                getView().onLoginSuccess();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onLoginFailed(e.getMessage());
+            }
+
+            @Override
+            public void onNext(UserDto user) {
+                getView().saveUserData(user.getToken(), user.getUser().getEmail());
+            }
+        });
     }
 
     @Override

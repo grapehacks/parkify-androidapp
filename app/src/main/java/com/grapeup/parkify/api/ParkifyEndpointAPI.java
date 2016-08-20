@@ -7,7 +7,7 @@ package com.grapeup.parkify.api;
  */
 public class ParkifyEndpointAPI implements EndpointAPI {
 
-    public static final String API_URL = "http://";
+    public static final String API_URL = "http://krk.grapeup.com:8080";
 
     @Override
     public String getApiEndpointUrl() {

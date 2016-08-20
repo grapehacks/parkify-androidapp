@@ -1,6 +1,6 @@
 package com.grapeup.parkify.mvp.login;
 
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -8,23 +8,28 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.mvp.main.MainActivity;
+import com.grapeup.parkify.tools.UserDataHelper;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements LoginView {
+public class LoginActivity extends AppCompatActivity implements LoginView, PingView {
 
-    LoginPresenter mLoginPresenter;
+    private LoginPresenter mLoginPresenter;
+    private PingPresenterImpl mPingPresenter;
 
     @BindView(R.id.editTextUsername)
     EditText mUsername;
 
     @BindView(R.id.editTextPassword)
     EditText mPassword;
-
     @BindView(R.id.buttonLogin)
     Button mButtonLogin;
+    private Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,17 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         ButterKnife.bind(this);
         mLoginPresenter = new LoginPresenterImpl();
         mLoginPresenter.attachView(this);
+
+        mPingPresenter = new PingPresenterImpl();
+        mPingPresenter.attachView(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String token = UserDataHelper.getToken(this);
+        mPingPresenter.setToken(token);
+        mPingPresenter.start();
     }
 
     @Override
@@ -48,11 +64,44 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Override
     public void onLoginSuccess() {
-
+        startMainActivity();
     }
 
     @Override
-    public void onLoginFailed() {
-        Toast.makeText(this, "Not implemented", Toast.LENGTH_LONG).show();
+    public void onLoginFailed(String message) {
+        Toast.makeText(this, "Failed to login: " + message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void saveUserData(String token, String email) {
+        UserDataHelper.saveUserInfo(this, token, email);
+    }
+
+    @Override
+    public void onPingFailed(String message) {
+        Toast.makeText(this, "Failed to login: " + message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void tokenIsValid() {
+        startMainActivity();
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putSerializable(MainActivity.BUNDLE_DATE, date);
+        intent.putExtras(mBundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void tokenIsInvalid() {
+        // do nothing
+    }
+
+    @Override
+    public void setNextDrawDate(Date date) {
+        this.date = date;
     }
 }

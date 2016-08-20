@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.grapeup.parkify.R;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.ButterKnife;
 
 /**
@@ -22,8 +26,9 @@ import butterknife.ButterKnife;
 public final class MainFragment extends Fragment implements MainContract.View {
     private MainContract.MainPresenter mMainPresenter;
 
-    public static Fragment getInstance() {
+    public static Fragment getInstance(Date date) {
         Bundle bundle = new Bundle();
+        bundle.putSerializable(MainActivity.BUNDLE_DATE, date);
         MainFragment fragment = new MainFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -38,7 +43,10 @@ public final class MainFragment extends Fragment implements MainContract.View {
         dateIcon.setImageDrawable(new IconicsDrawable(getContext(), "faw-calendar-times-o"));
 
         TextView dateText = (TextView) view.findViewById(R.id.date_text);
-        dateText.setText("23-08-2016");
+        Date date = (Date) getArguments().getSerializable(MainActivity.BUNDLE_DATE);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String stringDate = df.format(date);
+        dateText.setText(stringDate);
 
         ButterKnife.bind(this, view);
 
