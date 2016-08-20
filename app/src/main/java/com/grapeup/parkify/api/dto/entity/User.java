@@ -3,10 +3,12 @@ package com.grapeup.parkify.api.dto.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.grapeup.parkify.api.dto.BaseDto;
+
 /**
  * @author Pavlo Tymchuk
  */
-public class User implements Parcelable {
+public class User extends BaseDto implements Parcelable {
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {

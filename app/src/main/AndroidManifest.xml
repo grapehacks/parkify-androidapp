@@ -22,9 +22,6 @@
         <activity android:name=".mvp.main.MainActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".mvp.choice.ChoiceActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
     </application>
 
 </manifest>

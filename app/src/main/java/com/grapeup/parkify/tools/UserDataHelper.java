@@ -30,4 +30,28 @@ public class UserDataHelper {
         String email = sharedPref.getString(Constants.USER_EMAIL, "");
         return email;
     }
+
+    public static void setUserIsRegistered(Activity activity, boolean isUserRegistered) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.IS_REGISTERED, isUserRegistered);
+        editor.commit();
+    }
+
+    public static boolean isUserRegistered(Activity activity) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(Constants.IS_REGISTERED, false);
+    }
+
+    public static void setRememberLastChoice(Activity activity, boolean isRememberLastChoice) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.IS_REMEMBER_LAST_CHOICE, isRememberLastChoice);
+        editor.commit();
+    }
+
+    public static boolean isRememberLastChoice(Activity activity) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(Constants.IS_REMEMBER_LAST_CHOICE, false);
+    }
 }

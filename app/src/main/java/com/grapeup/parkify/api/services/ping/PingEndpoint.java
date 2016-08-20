@@ -5,9 +5,7 @@ import com.grapeup.parkify.api.services.ParkifyEndpoint;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import rx.Observable;
 

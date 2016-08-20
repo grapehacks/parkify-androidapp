@@ -1,7 +1,6 @@
 package com.grapeup.parkify.mvp.login;
 
 import com.grapeup.parkify.api.dto.PingDto;
-import com.grapeup.parkify.api.dto.UserDto;
 import com.grapeup.parkify.api.services.ping.PingModel;
 import com.grapeup.parkify.api.services.ping.PingModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
