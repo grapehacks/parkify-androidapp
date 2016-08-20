@@ -1,6 +1,7 @@
 package com.grapeup.parkify.mvp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -10,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -19,11 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.grapeup.parkify.R;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.grapeup.parkify.mvp.login.LoginActivity;
+import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsCompatButton;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -80,6 +80,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         View logoutView = baseInflater.inflate(R.layout.item_logout, null);
         IconicsCompatButton logoutBtn = (IconicsCompatButton) logoutView.findViewById(R.id.iconic_btn_logout);
         logoutBtn.setBackground(new IconicsDrawable(this, "faw_sign_out"));
+        logoutBtn.setOnClickListener(SIGN_OUT_LISTENER);
         logoutView.setPadding(0,12,24,12);
         MenuItem logout = menu.findItem(R.id.menu_logout);
         logout.setActionView(logoutView);
@@ -100,6 +101,14 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private final View.OnClickListener SIGN_OUT_LISTENER = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
+            startActivity(new Intent(SingleFragmentActivity.this, LoginActivity.class));
+        }
+    };
 
     @NonNull
     private FragmentTransaction replaceFragment(Fragment fragment, boolean addBackStack) {
