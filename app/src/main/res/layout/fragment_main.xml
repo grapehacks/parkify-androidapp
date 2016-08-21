@@ -16,7 +16,6 @@
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:src="@drawable/grape_logo"
             app:cb_color="#ca7d7d"
             app:cb_pressedRingWidth="8dip"
             android:layout_weight="0.38" />

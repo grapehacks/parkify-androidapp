@@ -116,15 +116,13 @@ public final class MainFragment extends Fragment implements MainView {
         String stringDate = df.format(date);
         dateText.setText(stringDate);
 
-        int color;
-        if (UserDataHelper.isUserRegistered(getActivity())) {
-            color = getResources().getColor(R.color.green);
-        } else {
-            color = getResources().getColor(R.color.red);
-        }
-        registerBtn.setColor(color);
-        registerBtn.setOnClickListener(REGISTER_BTN_LISTENER);
+        initializeRegisterBtn();
+        initializeIsRegisteredBtn();
 
+        return view;
+    }
+
+    private void initializeIsRegisteredBtn() {
         Drawable backgroundIsUserRegistered;
         if (UserDataHelper.isUserRegistered(getActivity())) {
             backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_saved);
@@ -132,8 +130,21 @@ public final class MainFragment extends Fragment implements MainView {
             backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_notsaved);
         }
         isUserRegistered.setBackground(backgroundIsUserRegistered);
+    }
 
-        return view;
+    private void initializeRegisterBtn() {
+        int color;
+        if (UserDataHelper.isUserRegistered(getActivity())) {
+            color = getResources().getColor(R.color.green);
+        } else {
+            color = getResources().getColor(R.color.red);
+        }
+        registerBtn.setColor(color);
+        IconicsDrawable fawPowerOff = new IconicsDrawable(getActivity(), "faw_power_off");
+        fawPowerOff.colorRes(R.color.white);
+        fawPowerOff.sizeDp(60);
+        registerBtn.setImageDrawable(fawPowerOff);
+        registerBtn.setOnClickListener(REGISTER_BTN_LISTENER);
     }
 
     @Override

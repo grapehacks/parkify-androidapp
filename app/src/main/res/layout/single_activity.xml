@@ -21,14 +21,14 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             android:weightSum="1">
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="45dp"
                     android:src="@drawable/logo"/>
-            </RelativeLayout>
+            </RelativeLayout>-->
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

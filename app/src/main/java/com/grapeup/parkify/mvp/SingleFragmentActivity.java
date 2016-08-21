@@ -25,6 +25,7 @@ import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsCompatButton;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,6 +37,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     private static String TAG = "FRAGMENT_TAG";
     public FragmentManager mFragmentManager;
 
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
@@ -43,7 +45,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mFragmentManager = getSupportFragmentManager();
         Fragment fragment = mFragmentManager.findFragmentByTag(TAG);
@@ -62,64 +63,48 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setLogo(R.drawable.logo);*/
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setLogo(getResources().getDrawable(R.drawable.logo));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         toolbar.inflateMenu(R.menu.menu_main);
 
-        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
-        circle.getPaint().setColor(Color.GREEN);
-        circle.setIntrinsicHeight(120);
-        circle.setIntrinsicWidth(120);
-        circle.setBounds(0, 0, 120, 120);
-
-        // Get the root inflator.
-        LayoutInflater baseInflater = (LayoutInflater)getBaseContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View logoutView = baseInflater.inflate(R.layout.item_logout, null);
-        IconicsCompatButton logoutBtn = (IconicsCompatButton) logoutView.findViewById(R.id.iconic_btn_logout);
-        logoutBtn.setBackground(new IconicsDrawable(this, "faw_sign_out"));
-        logoutBtn.setOnClickListener(SIGN_OUT_LISTENER);
-        logoutView.setPadding(0,12,24,12);
         MenuItem logout = menu.findItem(R.id.menu_logout);
-        logout.setActionView(logoutView);
+        IconicsDrawable fawSignOut = new IconicsDrawable(this, "faw_sign_out");
+        fawSignOut.sizeDp(48);
+        fawSignOut.colorRes(R.color.black);
+        logout.setIcon(fawSignOut);
+        logout.setOnMenuItemClickListener(SIGN_OUT_LISTENER);
 
-        View settingsView = baseInflater.inflate(R.layout.item_settings, null);
-        IconicsCompatButton settingsBtn = (IconicsCompatButton) settingsView.findViewById(R.id.iconic_btn_settings);
-        settingsBtn.setBackground(new IconicsDrawable(this, "faw_cog"));
-        settingsView.setPadding(0,12,24,12);
         MenuItem settings = menu.findItem(R.id.menu_settings);
-        settings.setActionView(settingsView);
+        IconicsDrawable fawCon = new IconicsDrawable(this, "faw_cog");
+        fawCon.sizeDp(48);
+        fawCon.colorRes(R.color.black);
+        settings.setIcon(fawCon);
 
-        View messagesView = baseInflater.inflate(R.layout.item_messages, null);
-        IconicsCompatButton messagesBtn = (IconicsCompatButton) messagesView.findViewById(R.id.iconic_btn_messages);
-        messagesBtn.setBackground(new IconicsDrawable(this, "faw_commenting"));
-        messagesBtn.setOnClickListener(SHOW_MESSAGES_LISTENER);
-        messagesView.setPadding(0,12,24,12);
         MenuItem messages = menu.findItem(R.id.menu_messages);
-        messages.setActionView(messagesView);
+        IconicsDrawable fawCommenting = new IconicsDrawable(this, "faw_commenting");
+        fawCommenting.sizeDp(48);
+        fawCommenting.colorRes(R.color.black);
+        messages.setIcon(fawCommenting);
+        messages.setOnMenuItemClickListener(SHOW_MESSAGES_LISTENER);
 
         return true;
     }
 
-    private final View.OnClickListener SHOW_MESSAGES_LISTENER = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            String token = UserDataHelper.getToken(SingleFragmentActivity.this);
-            Intent intent = new Intent(SingleFragmentActivity.this, MessagesActivity.class);
-            intent.putExtra("token", token);
-            startActivity(intent);
-        }
+    private final MenuItem.OnMenuItemClickListener SHOW_MESSAGES_LISTENER = (view) -> {
+        String token = UserDataHelper.getToken(SingleFragmentActivity.this);
+        Intent intent = new Intent(SingleFragmentActivity.this, MessagesActivity.class);
+        intent.putExtra("token", token);
+        startActivity(intent);
+        return true;
     };
 
-    private final View.OnClickListener SIGN_OUT_LISTENER = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
-            startActivity(new Intent(SingleFragmentActivity.this, LoginActivity.class));
-        }
+    private final MenuItem.OnMenuItemClickListener SIGN_OUT_LISTENER = (view) -> {
+        UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
+        startActivity(new Intent(SingleFragmentActivity.this, LoginActivity.class));
+        return true;
     };
 
     @NonNull
