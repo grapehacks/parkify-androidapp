@@ -109,7 +109,10 @@ public final class MainFragment extends Fragment implements MainView {
 
         dialog = new Dialog(getActivity(), Theme_Black_NoTitleBar_Fullscreen);
 
-        dateIcon.setImageDrawable(new IconicsDrawable(getContext(), "faw_calendar_times_o"));
+        IconicsDrawable fawCalendarTimesO = new IconicsDrawable(getContext(), "faw_calendar_times_o");
+        fawCalendarTimesO.sizeDp(36);
+        fawCalendarTimesO.colorRes(R.color.black);
+        dateIcon.setImageDrawable(fawCalendarTimesO);
 
         Date date = (Date) getArguments().getSerializable(MainActivity.BUNDLE_DATE);
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
