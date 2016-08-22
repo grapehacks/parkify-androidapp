@@ -10,7 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.Message;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,6 +30,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         @BindView(R.id.item_message_body)
         TextView messageBody;
 
+        @BindView(R.id.item_message_date)
+        TextView messageDate;
+
         @BindView(R.id.item_message_layout)
         LinearLayout messageLayout;
 
@@ -35,12 +42,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
     }
 
-    private List<MessageModel> mMessages;
+    private List<Message> mMessages = new ArrayList<>();
     private Context mContext;
+    private MessagesContract.MessagesPresenter mPresenter;
 
-    public MessagesAdapter(Context mContext, List<MessageModel> mMessages) {
-        this.mMessages = mMessages;
+    public MessagesAdapter(Context mContext, MessagesContract.MessagesPresenter presenter) {
         this.mContext = mContext;
+        mPresenter = presenter;
+    }
+
+    public void setMessages(List<Message> messages) {
+        mMessages = messages;
     }
 
     private Context getContext() {
@@ -60,10 +72,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(MessagesAdapter.ViewHolder holder, int position) {
-        MessageModel messageModel = mMessages.get(position);
-        holder.messageTitle.setText(messageModel.getTitle());
-        holder.messageBody.setText((messageModel.getBody()));
-        switch (messageModel.getType()) {
+        Message message = mMessages.get(position);
+        holder.messageTitle.setText(message.getTopic());
+        holder.messageBody.setText(message.getText());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String stringDate = df.format(message.getDate());
+        holder.messageDate.setText(stringDate);
+        switch (message.getType()) {
             case 0:
                 holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green));
                 break;

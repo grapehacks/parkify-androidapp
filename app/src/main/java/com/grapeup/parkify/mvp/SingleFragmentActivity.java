@@ -1,10 +1,6 @@
 package com.grapeup.parkify.mvp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -13,17 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.mvp.login.LoginActivity;
 import com.grapeup.parkify.mvp.messages.MessagesActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.view.IconicsCompatButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,11 +70,11 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         logout.setIcon(fawSignOut);
         logout.setOnMenuItemClickListener(SIGN_OUT_LISTENER);
 
-        MenuItem settings = menu.findItem(R.id.menu_settings);
+        /*MenuItem settings = menu.findItem(R.id.menu_settings);
         IconicsDrawable fawCon = new IconicsDrawable(this, "faw_cog");
         fawCon.sizeDp(48);
         fawCon.colorRes(R.color.black);
-        settings.setIcon(fawCon);
+        settings.setIcon(fawCon);*/
 
         MenuItem messages = menu.findItem(R.id.menu_messages);
         IconicsDrawable fawCommenting = new IconicsDrawable(this, "faw_commenting");

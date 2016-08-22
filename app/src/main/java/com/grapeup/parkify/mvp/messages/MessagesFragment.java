@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,15 +23,8 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     @BindView(R.id.messagesRecyclerView)
     RecyclerView messagesRecyclerView;
 
-    List<MessageModel> mMessages = new ArrayList<>();
     MessagesContract.MessagesPresenter messagesPresenter;
-
-    private void createMessages() {
-        for (int i=0; i<30; i++) {
-            mMessages.add(new MessageModelImpl(String.valueOf(i*10), String.valueOf(i), i%4));
-        }
-    }
-
+    private MessagesAdapter mMessagesAdapter;
 
     public static Fragment getInstance(String token) {
         Bundle bundle = new Bundle();
@@ -48,19 +41,31 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
 
         ButterKnife.bind(this, view);
 
-        createMessages();
         String token = getArguments().getString("token");
-        messagesRecyclerView.setAdapter(new MessagesAdapter(getActivity(), mMessages));
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         messagesPresenter = new MessagesPresenterImpl();
         messagesPresenter.attachView(this);
         messagesPresenter.setToken(token);
         messagesPresenter.start();
+
+        mMessagesAdapter = new MessagesAdapter(getActivity(), messagesPresenter);
+        messagesRecyclerView.setAdapter(mMessagesAdapter);
+        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         return view;
     }
 
     @Override
-    public void onMessagesReceived() {
+    public void onMessagesReceived(List<Message> messages) {
+        mMessagesAdapter.setMessages(messages);
+    }
 
+    @Override
+    public void onMessagesReceiveError(String message) {
+
+    }
+
+    @Override
+    public void onMessagesReceiveCompleted() {
+        mMessagesAdapter.notifyDataSetChanged();
     }
 }

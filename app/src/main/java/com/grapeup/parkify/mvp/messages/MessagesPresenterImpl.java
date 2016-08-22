@@ -1,10 +1,7 @@
 package com.grapeup.parkify.mvp.messages;
 
 
-import com.grapeup.parkify.api.dto.MessageDto;
 import com.grapeup.parkify.api.dto.entity.Message;
-import com.grapeup.parkify.api.services.messages.*;
-import com.grapeup.parkify.api.services.messages.MessageModel;
 import com.grapeup.parkify.api.services.messages.MessageModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
 
@@ -32,17 +29,17 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
         messageModel.messages(token).subscribe(new Observer<List<Message>>() {
             @Override
             public void onCompleted() {
-
+                getView().onMessagesReceiveCompleted();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                getView().onMessagesReceiveError(e.getMessage());
             }
 
             @Override
-            public void onNext(List<Message> messageDto) {
-
+            public void onNext(List<Message> messages) {
+                getView().onMessagesReceived(messages);
             }
         });
     }
