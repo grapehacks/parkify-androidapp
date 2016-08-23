@@ -1,34 +1,157 @@
 package com.grapeup.parkify.mvp.messages;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.os.ResultReceiver;
+import android.os.SystemClock;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
+
+import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.Message;
+import com.grapeup.parkify.mvp.main.MainActivity;
+import com.grapeup.parkify.tools.UserDataHelper;
+
+import java.util.List;
 
 /**
  * Service for retrieving new messages for every minute
  *
  * @author Pavlo Tymchuk
  */
-public class MessagesService extends IntentService{
+public class MessagesService extends IntentService implements MessagesContract.View {
     public static final String TAG = MessagesService.class.getSimpleName();
-    public static final String RECEIVER = "RECEIVER";
+    public static final String ACTION = "com.grapeup.parkify.mvp.messages";
+    public static final int REQUEST_CODE = 123321;
+    public static int COUNT = 0;
 
-    public static Intent createIntent(Context context, MessagesDataReceiver receiver) {
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, context, MessagesService.class);
-        intent.putExtra(RECEIVER, receiver);
-        return intent;
+    private final MessagesContract.MessagesPresenter mMessagesPresenter;
+    private Intent mIntent;
+
+    public static PendingIntent createPendingIntent(Context context) {
+        // Construct an intent that will execute the MessagesDataReceiver
+        Intent intent = new Intent(ACTION, null, context, MessagesBroadcastReceiver.class);
+        // Create a PendingIntent to be triggered when the alarm goes off
+        return PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    // Recurring alarm every minute for fetching messages
+    public static void scheduleAlarmForReceivingMessages(Context context) {
+        final PendingIntent pIntent = MessagesService.createPendingIntent(context);
+        setAlarm(context, pIntent);
+    }
+
+    public static void setAlarm(Context context, PendingIntent pIntent) {
+        // Setup periodic alarm every minute
+        long interval = 60 * 1000;
+        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), interval, pIntent);
+    }
+
+    public static void cancelAlarmForReceivingMessages(Context context) {
+        final PendingIntent pIntent = MessagesService.createPendingIntent(context);
+        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pIntent);
     }
 
     public MessagesService() {
         super(TAG);
+        mMessagesPresenter = new MessagesPresenterImpl();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mMessagesPresenter.attachView(this);
+        String token = UserDataHelper.getToken(getApplication());
+        mMessagesPresenter.setToken(token);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        mIntent = intent;
         Log.d(TAG, "Service started.");
 
-        ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
+        mMessagesPresenter.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onMessagesReceived(List<Message> messages) {
+        if (receivedNewMessages()) {
+            createNotification(messages);
+        }
+    }
+
+    private boolean receivedNewMessages() {
+        return true;
+    }
+
+    private void createNotification(List<Message> messages) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext());
+        builder.setSmallIcon(R.drawable.messages);
+        builder.setContentTitle(getResources().getString(R.string.app_name));
+        String receivedMessagesString = getResources().getString(R.string.received_messages);
+        String formattedString = String.format(receivedMessagesString, "" + (COUNT++) /*messages.size()*/);
+        builder.setContentText(formattedString);
+        builder.setAutoCancel(true);
+
+        Intent intent = new Intent(getBaseContext(), MessagesActivity.class);
+        // The stack builder object will contain an artificial back stack for the started Activity.
+        // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        builder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(0, builder.build());
+        Vibrator vibrator = (Vibrator) getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
+        // star wars theme :D
+        vibrator.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);
+    }
+
+    @Override
+    public void onMessagesReceiveError(String message) {
+        WakefulBroadcastReceiver.completeWakefulIntent(mIntent);
+        mMessagesPresenter.detachView();
+    }
+
+    @Override
+    public void onMessagesReceiveCompleted() {
+        WakefulBroadcastReceiver.completeWakefulIntent(mIntent);
+        mMessagesPresenter.detachView();
+    }
+
+    public static class MessagesBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")
+                    || intent.getAction().equals(ACTION)) {
+                Intent i = new Intent(context, MessagesService.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT);
+                setAlarm(context, pendingIntent);
+            }
+        }
     }
 }

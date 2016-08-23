@@ -2,10 +2,8 @@ package com.grapeup.parkify.mvp.main;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.grapeup.parkify.R;
-import com.grapeup.parkify.mvp.messages.MessagesDataReceiver;
 import com.grapeup.parkify.mvp.messages.MessagesService;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -38,10 +35,9 @@ import static android.R.style.Theme_Black_NoTitleBar_Fullscreen;
  *
  * @author Pavlo Tymchuk
  */
-public final class MainFragment extends Fragment implements MainView, MessagesDataReceiver.Receiver {
+public final class MainFragment extends Fragment implements MainView {
     private MainPresenter mMainPresenter;
     private Dialog dialog;
-    private MessagesDataReceiver mMessagesReceiver;
 
     @BindView(R.id.date_icon) ImageView dateIcon;
     @BindView(R.id.register_btn) CircleButton registerBtn;
@@ -99,13 +95,16 @@ public final class MainFragment extends Fragment implements MainView, MessagesDa
         mMainPresenter = new MainPresenterImpl();
         mMainPresenter.attachView(this);
 
-        startMessagesService();
+        triggerMessagesService();
     }
 
-    private void startMessagesService() {
-        mMessagesReceiver = new MessagesDataReceiver(new Handler(), this);
-        Intent intent = MessagesService.createIntent(getActivity(), mMessagesReceiver);
-        getActivity().startService(intent);
+    private void triggerMessagesService() {
+        Context context = getContext();
+        if (UserDataHelper.isUserRegistered(getActivity())) {
+            MessagesService.scheduleAlarmForReceivingMessages(context);
+        } else {
+            MessagesService.cancelAlarmForReceivingMessages(context);
+        }
     }
 
     @Override
@@ -170,6 +169,8 @@ public final class MainFragment extends Fragment implements MainView, MessagesDa
         isUserRegistered.setBackground(backgroundIsUserRegistered);
         UserDataHelper.setUserIsRegistered(getActivity(), true);
         dialog.dismiss();
+
+        triggerMessagesService();
     }
 
     @Override
@@ -179,6 +180,8 @@ public final class MainFragment extends Fragment implements MainView, MessagesDa
         isUserRegistered.setBackground(backgroundIsUserRegistered);
         UserDataHelper.setUserIsRegistered(getActivity(), false);
         dialog.dismiss();
+
+        triggerMessagesService();
     }
 
     @Override
@@ -191,8 +194,4 @@ public final class MainFragment extends Fragment implements MainView, MessagesDa
         dialog.dismiss();
     }
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-
-    }
 }

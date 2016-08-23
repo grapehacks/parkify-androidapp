@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.api.dto.entity.Message;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.List;
 
@@ -26,9 +27,8 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     MessagesContract.MessagesPresenter messagesPresenter;
     private MessagesAdapter mMessagesAdapter;
 
-    public static Fragment getInstance(String token) {
+    public static Fragment getInstance() {
         Bundle bundle = new Bundle();
-        bundle.putString("token", token);
         MessagesFragment fragment = new MessagesFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -41,7 +41,7 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
 
         ButterKnife.bind(this, view);
 
-        String token = getArguments().getString("token");
+        String token = UserDataHelper.getToken(getActivity());
         messagesPresenter = new MessagesPresenterImpl();
         messagesPresenter.attachView(this);
         messagesPresenter.setToken(token);

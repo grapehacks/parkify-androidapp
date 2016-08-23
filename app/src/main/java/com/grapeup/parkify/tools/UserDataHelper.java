@@ -1,6 +1,7 @@
 package com.grapeup.parkify.tools;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -21,6 +22,12 @@ public class UserDataHelper {
 
     public static String getToken(Activity activity) {
         SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString(Constants.USER_TOKEN, "");
+        return token;
+    }
+
+    public static String getToken(Application application) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         String token = sharedPref.getString(Constants.USER_TOKEN, "");
         return token;
     }
