@@ -90,10 +90,12 @@ public class MessagesService extends IntentService implements MessagesContract.V
     @Override
     public void onMessagesReceived(List<Message> messages) {
         //TODO remove
-        //messages = UserDataHelper.generateMessages();
+        messages = UserDataHelper.generateMessages();
         if (mMessagesPresenter.receivedNewMessages(messages)) {
             int count = mMessagesPresenter.howMuchReceived(messages);
-            createNotification(count);
+            if (count > 0) {
+                createNotification(count);
+            }
         }
     }
 
