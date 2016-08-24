@@ -1,7 +1,6 @@
 package com.grapeup.parkify.api.services.messages;
 
 
-import com.grapeup.parkify.api.dto.MessageDto;
 import com.grapeup.parkify.api.dto.entity.Message;
 
 import java.util.List;
@@ -18,10 +17,17 @@ public class MessageModelImpl implements MessageModel{
     }
 
     @Override
-    public Observable<List<Message>> messages(String token, int unreadCount) {
+    public Observable<List<Message>> messages(String token) {
         messagesEndpoint.setToken(token);
-        messagesEndpoint.setUnreadCount(unreadCount);
         return messagesEndpoint.observable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Message> readMessage(String token, String messageId) {
+        messagesEndpoint.setToken(token);
+        return messagesEndpoint.readMessage(messageId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

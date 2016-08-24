@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.mvp.main.MainActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 
@@ -20,7 +21,7 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity implements LoginView, PingView {
 
     private LoginPresenter mLoginPresenter;
-    private PingPresenterImpl mPingPresenter;
+    private PingPresenter mPingPresenter;
 
     @BindView(R.id.editTextUsername)
     EditText mUsername;
@@ -48,8 +49,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
     @Override
     protected void onResume() {
         super.onResume();
-        String token = UserDataHelper.getToken(this);
-        mPingPresenter.setToken(token);
         mPingPresenter.start();
     }
 
@@ -85,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
     }
 
     @Override
-    public void tokenIsValid() {
+    public void tokenIsValid(User user) {
         startMainActivity();
     }
 
@@ -100,6 +99,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
     @Override
     public void tokenIsInvalid() {
         // do nothing
+    }
+
+    @Override
+    public void onPingCompleted() {
+
     }
 
     @Override

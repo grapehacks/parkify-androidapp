@@ -14,22 +14,25 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import com.grapeup.parkify.R;
-import com.grapeup.parkify.api.dto.entity.Message;
+import com.grapeup.parkify.api.dto.entity.User;
+import com.grapeup.parkify.mvp.login.PingPresenter;
+import com.grapeup.parkify.mvp.login.PingPresenterImpl;
+import com.grapeup.parkify.mvp.login.PingView;
 import com.grapeup.parkify.tools.UserDataHelper;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * Service for retrieving new messages for every minute
  *
  * @author Pavlo Tymchuk
  */
-public class MessagesService extends IntentService implements MessagesContract.View {
+public class MessagesService extends IntentService implements PingView {
     public static final String TAG = MessagesService.class.getSimpleName();
     public static final String ACTION = "com.grapeup.parkify.mvp.messages";
     public static final int REQUEST_CODE = 123321;
 
-    private final MessagesContract.MessagesPresenter mMessagesPresenter;
+    private final PingPresenter mPingPresenter;
     private Intent mIntent;
 
     public static PendingIntent createPendingIntent(Context context) {
@@ -61,18 +64,14 @@ public class MessagesService extends IntentService implements MessagesContract.V
 
     public MessagesService() {
         super(TAG);
-        mMessagesPresenter = new MessagesPresenterImpl();
+        mPingPresenter = new PingPresenterImpl();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mMessagesPresenter.attachView(this);
-        mMessagesPresenter.attachApplication(getApplication());
-        String token = UserDataHelper.getToken(getApplication());
-        int unreadCount = UserDataHelper.getUnreadCount(getApplication());
-        mMessagesPresenter.setToken(token);
-        mMessagesPresenter.setUnreadCount(unreadCount);
+        mPingPresenter.attachView(this);
+        mPingPresenter.attachApplication(getApplication());
     }
 
     @Override
@@ -80,28 +79,13 @@ public class MessagesService extends IntentService implements MessagesContract.V
         mIntent = intent;
         Log.d(TAG, "Service started.");
         if (UserDataHelper.isUserRegistered(getApplication())) {
-            mMessagesPresenter.start();
+            mPingPresenter.start();
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onMessagesReceived(List<Message> messages) {
-        if (messages.size() > 0) {
-            createNotification(messages.size());
-        }
-        //TODO remove
-//        messages = UserDataHelper.generateMessages();
-//        if (mMessagesPresenter.receivedNewMessages(messages)) {
-//            int count = mMessagesPresenter.howMuchReceived(messages);
-//            if (count > 0) {
-//                createNotification(count);
-//            }
-//        }
     }
 
     private void createNotification(int count) {
@@ -139,15 +123,36 @@ public class MessagesService extends IntentService implements MessagesContract.V
     }
 
     @Override
-    public void onMessagesReceiveError(String message) {
+    public void onPingFailed(String message) {
         WakefulBroadcastReceiver.completeWakefulIntent(mIntent);
-        mMessagesPresenter.detachView();
+        mPingPresenter.detachView();
     }
 
     @Override
-    public void onMessagesReceiveCompleted() {
+    public void setNextDrawDate(Date date) {
+        //do nothing
+    }
+
+    @Override
+    public void tokenIsValid(User user) {
+        int savedUnreadCount = UserDataHelper.getUnreadCount(getApplication());
+        int unreadMessageCounter = user.getUnreadMsgCounter();
+
+        if (unreadMessageCounter > 0 && savedUnreadCount != unreadMessageCounter) {
+            createNotification(unreadMessageCounter);
+            UserDataHelper.setUnreadCount(getApplication(), unreadMessageCounter);
+        }
+    }
+
+    @Override
+    public void tokenIsInvalid() {
+
+    }
+
+    @Override
+    public void onPingCompleted() {
         WakefulBroadcastReceiver.completeWakefulIntent(mIntent);
-        mMessagesPresenter.detachView();
+        mPingPresenter.detachView();
     }
 
     public static class MessagesBroadcastReceiver extends BroadcastReceiver {

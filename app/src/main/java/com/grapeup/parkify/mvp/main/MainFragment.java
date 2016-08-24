@@ -48,7 +48,6 @@ public final class MainFragment extends Fragment implements MainView {
 
 
     public View.OnClickListener REGISTER_BTN_LISTENER = (v) -> {
-        String token = UserDataHelper.getToken(getActivity());
         // Get the root inflator.
         LayoutInflater baseInflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -71,9 +70,9 @@ public final class MainFragment extends Fragment implements MainView {
             toggleSynchronizedIcon(isRemember);
             UserDataHelper.setRememberLastChoice(getActivity(), isRemember);
             if (!isUserRegistered) {
-                mMainPresenter.register(token, isRemember);
+                mMainPresenter.register(isRemember);
             } else {
-                mMainPresenter.unregister(token, isRemember);
+                mMainPresenter.unregister(isRemember);
             }
         });
         Button buttonNo = (Button) dialogView.findViewById(R.id.buttonNo);
@@ -108,7 +107,7 @@ public final class MainFragment extends Fragment implements MainView {
         super.onCreate(savedInstanceState);
         mMainPresenter = new MainPresenterImpl();
         mMainPresenter.attachView(this);
-
+        mMainPresenter.attachApplication(getActivity().getApplication());
         triggerMessagesService();
     }
 

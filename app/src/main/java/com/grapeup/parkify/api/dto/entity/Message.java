@@ -22,6 +22,7 @@ public class Message extends BaseDto implements Parcelable {
         }
     };
 
+    private String _id;
     private String text;
     private String topic;
     private int type;
@@ -31,6 +32,7 @@ public class Message extends BaseDto implements Parcelable {
     public Message(){}
 
     protected Message(Parcel in) {
+        _id = in.readString();
         text = in.readString();
         topic = in.readString();
         type = in.readInt();
@@ -45,10 +47,19 @@ public class Message extends BaseDto implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(_id);
         parcel.writeString(text);
         parcel.writeString(topic);
         parcel.writeInt(type);
         parcel.writeByte(read ? (byte) 1 : (byte) 0);
+    }
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String id) {
+        this._id = id;
     }
 
     public String getText() {
@@ -100,6 +111,7 @@ public class Message extends BaseDto implements Parcelable {
 
         if (type != message.type) return false;
         if (read != message.read) return false;
+        if (_id != null ? !_id.equals(message._id) : message._id != null) return false;
         if (text != null ? !text.equals(message.text) : message.text != null) return false;
         if (topic != null ? !topic.equals(message.topic) : message.topic != null) return false;
         return date != null ? date.equals(message.date) : message.date == null;
@@ -110,7 +122,7 @@ public class Message extends BaseDto implements Parcelable {
     public int hashCode() {
         int result = text != null ? text.hashCode() : 0;
         result = 31 * result + (topic != null ? topic.hashCode() : 0);
-        result = 31 * result + type;
+        result = 31 * result + (_id != null ? _id.hashCode() : 0);
         result = 31 * result + (read ? 1 : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
         return result;
@@ -119,7 +131,8 @@ public class Message extends BaseDto implements Parcelable {
     @Override
     public String toString() {
         return "Message{" +
-                "text='" + text + '\'' +
+                "id='" + _id + '\'' +
+                ", text='" + text + '\'' +
                 ", topic='" + topic + '\'' +
                 ", type=" + type +
                 ", read=" + read +

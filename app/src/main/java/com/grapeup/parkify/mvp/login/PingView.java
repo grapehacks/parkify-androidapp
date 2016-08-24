@@ -1,5 +1,6 @@
 package com.grapeup.parkify.mvp.login;
 
+import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.mvp.BaseView;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
 public interface PingView extends BaseView {
     void onPingFailed(String message);
     void setNextDrawDate(Date date);
-    void tokenIsValid();
+    void tokenIsValid(User user);
     void tokenIsInvalid();
+    void onPingCompleted();
 }

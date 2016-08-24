@@ -37,7 +37,6 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
             public void onNext(UserDto user) {
                 if (isViewAttached()) {
                     getView().saveUserData(user.getToken(), user.getUser().getEmail());
-                    UserDataHelper.setUnreadCount(application, user.getUser().getUnreadMessageCounter());
                 }
             }
         });

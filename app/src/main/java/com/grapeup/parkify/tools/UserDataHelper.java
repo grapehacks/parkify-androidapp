@@ -69,38 +69,16 @@ public class UserDataHelper {
         return sharedPref.getBoolean(Constants.IS_REMEMBER_LAST_CHOICE, false);
     }
 
-    public static void setLastMessageTime(Application application, long time) {
-        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(Constants.LAST_MESSAGE_TIME, time);
-        editor.commit();
-    }
-
-    public static long getLastMessageTime(Application application) {
-        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPref.getLong(Constants.LAST_MESSAGE_TIME, -1L);
-    }
-
     public static void setUnreadCount(ContextWrapper application, int unreadCount) {
         SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(Constants.UNREAD_COUNT, unreadCount);
+        editor.commit();
     }
 
     public static int getUnreadCount(ContextWrapper application) {
         SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         return sharedPref.getInt(Constants.UNREAD_COUNT, -1);
-    }
-
-    public static void setReceivedCount(ContextWrapper application, int receivedCount) {
-        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(Constants.RECEIVED_COUNT, receivedCount);
-    }
-
-    public static int getReceivedCount(ContextWrapper application) {
-        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPref.getInt(Constants.RECEIVED_COUNT, 0);
     }
 
     //TODO remove
