@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -16,7 +15,6 @@ import android.util.Log;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.api.dto.entity.Message;
-import com.grapeup.parkify.mvp.main.MainActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.List;
@@ -49,6 +47,7 @@ public class MessagesService extends IntentService implements MessagesContract.V
 
     public static void setAlarm(Context context, PendingIntent pIntent) {
         // Setup periodic alarm every minute
+        //TODO change to 60
         long interval = 10 * 1000;
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), interval, pIntent);
@@ -91,7 +90,7 @@ public class MessagesService extends IntentService implements MessagesContract.V
     @Override
     public void onMessagesReceived(List<Message> messages) {
         //TODO remove
-        messages = UserDataHelper.generateMessages();
+        //messages = UserDataHelper.generateMessages();
         if (mMessagesPresenter.receivedNewMessages(messages)) {
             int count = mMessagesPresenter.howMuchReceived(messages);
             createNotification(count);
@@ -108,11 +107,11 @@ public class MessagesService extends IntentService implements MessagesContract.V
         builder.setAutoCancel(true);
 
         Intent intent = new Intent(getBaseContext(), MessagesActivity.class);
+        intent.putExtra(MessagesActivity.ON_FINISH_START_MAIN_ACTIVITY, true);
         // The stack builder object will contain an artificial back stack for the started Activity.
         // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addParentStack(MessagesActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(intent);
