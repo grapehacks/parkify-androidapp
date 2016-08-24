@@ -63,7 +63,9 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
         messageModel.messages(token).subscribe(new Observer<List<Message>>() {
             @Override
             public void onCompleted() {
-                getView().onMessagesReceiveCompleted();
+                if (isViewAttached()) {
+                    getView().onMessagesReceiveCompleted();
+                }
             }
 
             @Override

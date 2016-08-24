@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentActivity;
 
 import com.grapeup.parkify.Constants;
 import com.grapeup.parkify.api.dto.entity.Message;
@@ -93,7 +92,7 @@ public class UserDataHelper {
             message.setRead(false);
             message.setText("Text" + i);
             message.setTopic("Topic" + i);
-            message.setType(random.nextInt(3));
+            message.setType(random.nextInt(4));
             result.add(message);
         }
 

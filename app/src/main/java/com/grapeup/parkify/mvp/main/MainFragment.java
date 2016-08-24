@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -43,6 +44,8 @@ public final class MainFragment extends Fragment implements MainView {
     @BindView(R.id.register_btn) CircleButton registerBtn;
     @BindView(R.id.date_text) TextView dateText;
     @BindView(R.id.is_user_registered_btn) Button isUserRegistered;
+    @BindView(R.id.synchronized_image) ImageView synchronizedIcon;
+
 
     public View.OnClickListener REGISTER_BTN_LISTENER = (v) -> {
         String token = UserDataHelper.getToken(getActivity());
@@ -65,6 +68,7 @@ public final class MainFragment extends Fragment implements MainView {
         Button buttonYes = (Button) dialogView.findViewById(R.id.buttonYes);
         buttonYes.setOnClickListener((butYes) -> {
             boolean isRemember = rememberLastChoice.isChecked();
+            toggleSynchronizedIcon(isRemember);
             UserDataHelper.setRememberLastChoice(getActivity(), isRemember);
             if (!isUserRegistered) {
                 mMainPresenter.register(token, isRemember);
@@ -80,6 +84,16 @@ public final class MainFragment extends Fragment implements MainView {
         dialog.setContentView(dialogView);
         dialog.show();
     };
+
+    private void toggleSynchronizedIcon(boolean isRemember) {
+        if (isRemember) {
+            synchronizedIcon.setVisibility(View.VISIBLE);
+            synchronizedIcon.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+        } else {
+            synchronizedIcon.setVisibility(View.GONE);
+            synchronizedIcon.setAnimation(null);
+        }
+    }
 
     public static Fragment getInstance(Date date) {
         Bundle bundle = new Bundle();
@@ -131,10 +145,19 @@ public final class MainFragment extends Fragment implements MainView {
         String stringDate = df.format(date);
         dateText.setText(stringDate);
 
+        initializeSynchronizeIcon();
         initializeRegisterBtn();
         initializeIsRegisteredBtn();
 
         return view;
+    }
+
+    private void initializeSynchronizeIcon() {
+        IconicsDrawable fawRefresh = new IconicsDrawable(getContext(), "faw_refresh");
+        fawRefresh.sizeDp(48);
+        fawRefresh.colorRes(R.color.black);
+        synchronizedIcon.setImageDrawable(fawRefresh);
+        toggleSynchronizedIcon(UserDataHelper.isRememberLastChoice(getActivity()));
     }
 
     private void initializeIsRegisteredBtn() {
