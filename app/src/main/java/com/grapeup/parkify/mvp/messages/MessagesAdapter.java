@@ -86,14 +86,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String stringDate = df.format(message.getDate());
         holder.messageDate.setText(stringDate);
-        holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_light));
+        holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
 
         holder.messageLayout.setOnClickListener(view -> {
-            TypedArray array = mContext.getTheme().obtainStyledAttributes(new int[] {
-                    android.R.attr.colorBackground,
+            mPresenter.readMessage(message, new MessagesContract.MessageReadResultHandler() {
+                @Override
+                public void success() {
+                    TypedArray array = mContext.getTheme().obtainStyledAttributes(new int[] {
+                            android.R.attr.colorBackground,
+                    });
+                    int backgroundColor = array.getColor(0, 0xFF00FF);
+                    view.setBackgroundColor(backgroundColor);
+                }
+
+                @Override
+                public void failed(Throwable e) {
+                    holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
+                }
             });
-            int backgroundColor = array.getColor(0, 0xFF00FF);
-            view.setBackgroundColor(backgroundColor);
         });
 
         int color = getColorByMessageType(message.getType());

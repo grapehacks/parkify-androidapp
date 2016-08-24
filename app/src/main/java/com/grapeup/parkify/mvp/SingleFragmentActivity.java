@@ -103,6 +103,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     private final MenuItem.OnMenuItemClickListener SIGN_OUT_LISTENER = (view) -> {
         UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
+        UserDataHelper.setUnreadCount(SingleFragmentActivity.this, -1);
+        UserDataHelper.setRememberLastChoice(SingleFragmentActivity.this, false);
+        UserDataHelper.setUserIsRegistered(SingleFragmentActivity.this, false);
         startActivity(new Intent(SingleFragmentActivity.this, LoginActivity.class));
         return true;
     };

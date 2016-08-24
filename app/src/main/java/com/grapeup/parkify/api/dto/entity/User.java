@@ -3,6 +3,8 @@ package com.grapeup.parkify.api.dto.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.grapeup.parkify.api.dto.BaseDto;
 
 /**
@@ -21,11 +23,15 @@ public class User extends BaseDto implements Parcelable {
         }
     };
 
+    @SerializedName("_id")
+    @Expose
     private String id;
     private String email;
     private String name;
-    private String password;
-    private int unreadMessageCounter;
+    private int numberOfAttempts;
+    private int numberOfWins;
+    private int unreadMsgCounter;
+    private boolean removed;
     private boolean rememberLastChoice;
     private int participate;
     private int type;
@@ -35,8 +41,10 @@ public class User extends BaseDto implements Parcelable {
         email = in.readString();
         name = in.readString();
         id = in.readString();
-        password = in.readString();
-        unreadMessageCounter = in.readInt();
+        numberOfAttempts = in.readInt();
+        numberOfWins = in.readInt();
+        unreadMsgCounter = in.readInt();
+        removed = in.readByte() == 1;
         rememberLastChoice = in.readByte() == 1;
         participate = in.readInt();
         type = in.readInt();
@@ -66,20 +74,36 @@ public class User extends BaseDto implements Parcelable {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public int getUnreadMsgCounter() {
+        return unreadMsgCounter;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public int getNumberOfAttempts() {
+        return numberOfAttempts;
     }
 
-    public int getUnreadMessageCounter() {
-        return unreadMessageCounter;
+    public void setNumberOfAttempts(int numberOfAttempts) {
+        this.numberOfAttempts = numberOfAttempts;
     }
 
-    public void setUnreadMessageCounter(int unreadMessageCounter) {
-        this.unreadMessageCounter = unreadMessageCounter;
+    public int getNumberOfWins() {
+        return numberOfWins;
+    }
+
+    public void setNumberOfWins(int numberOfWins) {
+        this.numberOfWins = numberOfWins;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
+
+    public void setUnreadMsgCounter(int unreadMsgCounter) {
+        this.unreadMsgCounter = unreadMsgCounter;
     }
 
     public boolean isRememberLastChoice() {
@@ -107,20 +131,41 @@ public class User extends BaseDto implements Parcelable {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(email);
+        dest.writeString(name);
+        dest.writeInt(numberOfAttempts);
+        dest.writeInt(numberOfWins);
+        dest.writeInt(unreadMsgCounter);
+        dest.writeByte(removed ? (byte) 1: (byte) 0);
+        dest.writeByte(rememberLastChoice ? (byte) 1: (byte) 0);
+        dest.writeInt(participate);
+        dest.writeInt(type);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
-        if (unreadMessageCounter != user.unreadMessageCounter) return false;
+        if (numberOfAttempts != user.numberOfAttempts) return false;
+        if (numberOfWins != user.numberOfWins) return false;
+        if (unreadMsgCounter != user.unreadMsgCounter) return false;
+        if (removed != user.removed) return false;
         if (rememberLastChoice != user.rememberLastChoice) return false;
         if (participate != user.participate) return false;
         if (type != user.type) return false;
         if (!id.equals(user.id)) return false;
         if (!email.equals(user.email)) return false;
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        return password != null ? password.equals(user.password) : user.password == null;
+        return name.equals(user.name);
 
     }
 
@@ -128,9 +173,11 @@ public class User extends BaseDto implements Parcelable {
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + email.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + unreadMessageCounter;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + numberOfAttempts;
+        result = 31 * result + numberOfWins;
+        result = 31 * result + unreadMsgCounter;
+        result = 31 * result + (removed ? 1 : 0);
         result = 31 * result + (rememberLastChoice ? 1 : 0);
         result = 31 * result + participate;
         result = 31 * result + type;
@@ -143,28 +190,13 @@ public class User extends BaseDto implements Parcelable {
                 "id='" + id + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", unreadMessageCounter=" + unreadMessageCounter +
+                ", numberOfAttempts=" + numberOfAttempts +
+                ", numberOfWins=" + numberOfWins +
+                ", unreadMsgCounter=" + unreadMsgCounter +
+                ", removed=" + removed +
                 ", rememberLastChoice=" + rememberLastChoice +
                 ", participate=" + participate +
                 ", type=" + type +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(email);
-        dest.writeString(name);
-        dest.writeString(password);
-        dest.writeInt(unreadMessageCounter);
-        dest.writeByte(rememberLastChoice ? (byte) 1: (byte) 0);
-        dest.writeInt(participate);
-        dest.writeInt(type);
     }
 }

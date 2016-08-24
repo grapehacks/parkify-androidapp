@@ -4,6 +4,7 @@ import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.api.services.register.RegisterModel;
 import com.grapeup.parkify.api.services.register.RegisterModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import rx.Observer;
 
@@ -23,7 +24,10 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
     }
 
     @Override
-    public void register(String token, boolean rememberLastChoice) {
+    public void register(boolean rememberLastChoice) {
+        if(!isApplicationAttached()) return;
+
+        String token = UserDataHelper.getToken(application);
         registerModel.register(token, rememberLastChoice).subscribe(new Observer<User>() {
             @Override
             public void onCompleted() {
@@ -46,7 +50,10 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
     }
 
     @Override
-    public void unregister(String token, boolean rememberLastChoice) {
+    public void unregister(boolean rememberLastChoice) {
+        if(!isApplicationAttached()) return;
+
+        String token = UserDataHelper.getToken(application);
         registerModel.unRegister(token, rememberLastChoice).subscribe(new Observer<User>() {
             @Override
             public void onCompleted() {

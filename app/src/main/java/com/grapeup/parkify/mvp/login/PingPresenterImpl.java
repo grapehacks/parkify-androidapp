@@ -1,6 +1,7 @@
 package com.grapeup.parkify.mvp.login;
 
 import com.grapeup.parkify.api.dto.PingDto;
+import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.api.services.ping.PingModel;
 import com.grapeup.parkify.api.services.ping.PingModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
@@ -13,22 +14,23 @@ import rx.Observer;
  */
 
 public class PingPresenterImpl extends BasePresenter<PingView> implements PingPresenter {
-    private String token;
     private PingModel mPingModel;
 
     public PingPresenterImpl() {
         mPingModel = new PingModelImpl();
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     @Override
     public void start() {
+        if(!isApplicationAttached()) return;
+
+        String token = UserDataHelper.getToken(application);
         mPingModel.ping(token).subscribe(new Observer<PingDto>() {
             @Override
             public void onCompleted() {
+                if (!isViewAttached()) return;
+
+                getView().onPingCompleted();
             }
 
             @Override
@@ -39,9 +41,9 @@ public class PingPresenterImpl extends BasePresenter<PingView> implements PingPr
             @Override
             public void onNext(PingDto pingDto) {
                 getView().setNextDrawDate(pingDto.getDate());
-                if (pingDto.getUser() != null) {
-                    UserDataHelper.setUnreadCount(application, pingDto.getUser().getUnreadMessageCounter());
-                    getView().tokenIsValid();
+                User user = pingDto.getUser();
+                if (user != null) {
+                    getView().tokenIsValid(user);
                 } else {
                     getView().tokenIsInvalid();
                 }

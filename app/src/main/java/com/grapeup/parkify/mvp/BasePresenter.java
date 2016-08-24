@@ -21,6 +21,10 @@ public abstract class BasePresenter<T extends BaseView> implements Presenter<T> 
         this.application = null;
     }
 
+    public boolean isApplicationAttached() {
+        return application != null;
+    }
+
     @Override
     public void attachView(T view) {
         mView = view;

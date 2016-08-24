@@ -1,26 +1,21 @@
 package com.grapeup.parkify.api.services.messages;
 
 
-import com.grapeup.parkify.api.dto.MessageDto;
 import com.grapeup.parkify.api.dto.entity.Message;
+import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.api.services.ParkifyEndpoint;
+import com.grapeup.parkify.api.services.register.RegisterService;
 
 import java.util.List;
-
-import okhttp3.Request;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import rx.Observable;
 
 public class MessagesEndpoint extends ParkifyEndpoint<List<Message>> {
-
-    private int unreadCount;
-
-    public void setUnreadCount(int unreadCount) {
-        this.unreadCount = unreadCount;
-    }
 
     protected Interceptor getInterceptor() {
         Interceptor interceptor = (chain) -> {
@@ -32,9 +27,7 @@ public class MessagesEndpoint extends ParkifyEndpoint<List<Message>> {
                     .addHeader("x-access-token", getToken())
                     .build();
             HttpUrl.Builder httpBuilder = request.url().newBuilder();
-            if (unreadCount != -1) {
-                httpBuilder.addEncodedQueryParameter("count", String.valueOf(unreadCount));
-            }
+            httpBuilder.addEncodedQueryParameter("count", String.valueOf(100));
 
             request = request.newBuilder().url(httpBuilder.build()).build();
             return chain.proceed(request);
@@ -46,5 +39,13 @@ public class MessagesEndpoint extends ParkifyEndpoint<List<Message>> {
     @Override
     protected Observable<List<Message>> requestFromBaseUrl(Retrofit restAdapter) {
         return restAdapter.create(MessageService.class).messages();
+    }
+
+    public Observable<Message> readMessage(String messageId) {
+        return readMessage(messageId, getRetrofit()).retry(5).debounce(100, TimeUnit.MICROSECONDS);
+    }
+
+    private Observable<Message> readMessage(String messageId, Retrofit restAdapter) {
+        return restAdapter.create(MessageService.class).readMessage(messageId);
     }
 }
