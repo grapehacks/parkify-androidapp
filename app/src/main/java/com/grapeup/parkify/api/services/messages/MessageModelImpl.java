@@ -18,8 +18,9 @@ public class MessageModelImpl implements MessageModel{
     }
 
     @Override
-    public Observable<List<Message>> messages(String token) {
+    public Observable<List<Message>> messages(String token, int unreadCount) {
         messagesEndpoint.setToken(token);
+        messagesEndpoint.setUnreadCount(unreadCount);
         return messagesEndpoint.observable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

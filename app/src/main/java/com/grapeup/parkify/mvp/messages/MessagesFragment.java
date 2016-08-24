@@ -43,9 +43,12 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
         //TODO this recycler view should be refreshed
 
         String token = UserDataHelper.getToken(getActivity());
+        int unreadCount = UserDataHelper.getUnreadCount(getActivity());
         messagesPresenter = new MessagesPresenterImpl();
         messagesPresenter.attachView(this);
+        messagesPresenter.attachApplication(getActivity().getApplication());
         messagesPresenter.setToken(token);
+        messagesPresenter.setUnreadCount(unreadCount);
         messagesPresenter.start();
 
         mMessagesAdapter = new MessagesAdapter(getActivity(), messagesPresenter);
@@ -58,7 +61,7 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     @Override
     public void onMessagesReceived(List<Message> messages) {
         //TODO remove
-        messages = UserDataHelper.generateMessages();
+        //messages = UserDataHelper.generateMessages();
         if (!messages.isEmpty()) {
             mMessagesAdapter.setMessages(messages);
             Message lastMessage = messages.get(messages.size() - 1);

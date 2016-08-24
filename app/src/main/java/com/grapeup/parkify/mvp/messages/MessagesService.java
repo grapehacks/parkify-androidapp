@@ -70,7 +70,9 @@ public class MessagesService extends IntentService implements MessagesContract.V
         mMessagesPresenter.attachView(this);
         mMessagesPresenter.attachApplication(getApplication());
         String token = UserDataHelper.getToken(getApplication());
+        int unreadCount = UserDataHelper.getUnreadCount(getApplication());
         mMessagesPresenter.setToken(token);
+        mMessagesPresenter.setUnreadCount(unreadCount);
     }
 
     @Override
@@ -89,14 +91,17 @@ public class MessagesService extends IntentService implements MessagesContract.V
 
     @Override
     public void onMessagesReceived(List<Message> messages) {
-        //TODO remove
-        messages = UserDataHelper.generateMessages();
-        if (mMessagesPresenter.receivedNewMessages(messages)) {
-            int count = mMessagesPresenter.howMuchReceived(messages);
-            if (count > 0) {
-                createNotification(count);
-            }
+        if (messages.size() > 0) {
+            createNotification(messages.size());
         }
+        //TODO remove
+//        messages = UserDataHelper.generateMessages();
+//        if (mMessagesPresenter.receivedNewMessages(messages)) {
+//            int count = mMessagesPresenter.howMuchReceived(messages);
+//            if (count > 0) {
+//                createNotification(count);
+//            }
+//        }
     }
 
     private void createNotification(int count) {

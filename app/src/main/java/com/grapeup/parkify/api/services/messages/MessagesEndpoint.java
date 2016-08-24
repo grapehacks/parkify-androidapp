@@ -16,6 +16,11 @@ import rx.Observable;
 
 public class MessagesEndpoint extends ParkifyEndpoint<List<Message>> {
 
+    private int unreadCount;
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
+    }
 
     protected Interceptor getInterceptor() {
         Interceptor interceptor = (chain) -> {
@@ -27,6 +32,9 @@ public class MessagesEndpoint extends ParkifyEndpoint<List<Message>> {
                     .addHeader("x-access-token", getToken())
                     .build();
             HttpUrl.Builder httpBuilder = request.url().newBuilder();
+            if (unreadCount != -1) {
+                httpBuilder.addEncodedQueryParameter("count", String.valueOf(unreadCount));
+            }
 
             request = request.newBuilder().url(httpBuilder.build()).build();
             return chain.proceed(request);

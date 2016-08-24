@@ -9,5 +9,5 @@ import java.util.List;
 import rx.Observable;
 
 public interface MessageModel {
-    Observable<List<Message>> messages(String token);
+    Observable<List<Message>> messages(String token, int unreadCount);
 }

@@ -81,6 +81,28 @@ public class UserDataHelper {
         return sharedPref.getLong(Constants.LAST_MESSAGE_TIME, -1L);
     }
 
+    public static void setUnreadCount(ContextWrapper application, int unreadCount) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(Constants.UNREAD_COUNT, unreadCount);
+    }
+
+    public static int getUnreadCount(ContextWrapper application) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getInt(Constants.UNREAD_COUNT, -1);
+    }
+
+    public static void setReceivedCount(ContextWrapper application, int receivedCount) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(Constants.RECEIVED_COUNT, receivedCount);
+    }
+
+    public static int getReceivedCount(ContextWrapper application) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getInt(Constants.RECEIVED_COUNT, 0);
+    }
+
     //TODO remove
     public static List<Message> generateMessages() {
         List<Message> result = new ArrayList<>();

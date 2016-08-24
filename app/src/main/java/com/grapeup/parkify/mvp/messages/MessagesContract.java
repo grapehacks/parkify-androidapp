@@ -17,6 +17,7 @@ public interface MessagesContract {
 
     interface MessagesPresenter extends Presenter<View> {
         void setToken(String token);
+        void setUnreadCount(int unreadCount);
         boolean receivedNewMessages(List<Message> messages);
         int howMuchReceived(List<Message> messages);
     }

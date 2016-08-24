@@ -4,6 +4,7 @@ import com.grapeup.parkify.api.dto.UserDto;
 import com.grapeup.parkify.api.services.login.LoginModel;
 import com.grapeup.parkify.api.services.login.LoginModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import rx.Observer;
 
@@ -36,6 +37,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
             public void onNext(UserDto user) {
                 if (isViewAttached()) {
                     getView().saveUserData(user.getToken(), user.getUser().getEmail());
+                    UserDataHelper.setUnreadCount(application, user.getUser().getUnreadMessageCounter());
                 }
             }
         });
