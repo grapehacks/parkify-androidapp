@@ -31,12 +31,16 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
 
             @Override
             public void onError(Throwable e) {
-                getView().onRegisterFailed(e.getMessage());
+                if (isViewAttached()) {
+                    getView().onRegisterFailed(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(User user) {
-                getView().userRegistered();
+                if (isViewAttached()) {
+                    getView().userRegistered();
+                }
             }
         });
     }
@@ -50,12 +54,16 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
 
             @Override
             public void onError(Throwable e) {
-                getView().onUnRegisterFailed(e.getMessage());
+                if (isViewAttached()) {
+                    getView().onUnRegisterFailed(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(User user) {
-                getView().userUnregistered();
+                if (isViewAttached()) {
+                    getView().userUnregistered();
+                }
             }
         });
     }

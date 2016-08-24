@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.mvp.messages.MessagesService;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
 
@@ -93,6 +94,17 @@ public final class MainFragment extends Fragment implements MainView {
         super.onCreate(savedInstanceState);
         mMainPresenter = new MainPresenterImpl();
         mMainPresenter.attachView(this);
+
+        triggerMessagesService();
+    }
+
+    private void triggerMessagesService() {
+        Context context = getContext();
+        if (UserDataHelper.isUserRegistered(getActivity())) {
+            MessagesService.scheduleAlarmForReceivingMessages(context);
+        } else {
+            MessagesService.cancelAlarmForReceivingMessages(context);
+        }
     }
 
     @Override
@@ -157,6 +169,8 @@ public final class MainFragment extends Fragment implements MainView {
         isUserRegistered.setBackground(backgroundIsUserRegistered);
         UserDataHelper.setUserIsRegistered(getActivity(), true);
         dialog.dismiss();
+
+        triggerMessagesService();
     }
 
     @Override
@@ -166,6 +180,8 @@ public final class MainFragment extends Fragment implements MainView {
         isUserRegistered.setBackground(backgroundIsUserRegistered);
         UserDataHelper.setUserIsRegistered(getActivity(), false);
         dialog.dismiss();
+
+        triggerMessagesService();
     }
 
     @Override
@@ -177,4 +193,5 @@ public final class MainFragment extends Fragment implements MainView {
     public void onUnRegisterFailed(String message) {
         dialog.dismiss();
     }
+
 }

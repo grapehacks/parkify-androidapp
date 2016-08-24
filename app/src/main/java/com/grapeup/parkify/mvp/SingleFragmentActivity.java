@@ -87,9 +87,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     }
 
     private final MenuItem.OnMenuItemClickListener SHOW_MESSAGES_LISTENER = (view) -> {
-        String token = UserDataHelper.getToken(SingleFragmentActivity.this);
         Intent intent = new Intent(SingleFragmentActivity.this, MessagesActivity.class);
-        intent.putExtra("token", token);
         startActivity(intent);
         return true;
     };

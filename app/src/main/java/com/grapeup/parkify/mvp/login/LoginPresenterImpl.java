@@ -20,17 +20,23 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
         loginModel.login(email, password).subscribe(new Observer<UserDto>() {
             @Override
             public void onCompleted() {
-                getView().onLoginSuccess();
+                if (isViewAttached()) {
+                    getView().onLoginSuccess();
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-                getView().onLoginFailed(e.getMessage());
+                if (isViewAttached()) {
+                    getView().onLoginFailed(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(UserDto user) {
-                getView().saveUserData(user.getToken(), user.getUser().getEmail());
+                if (isViewAttached()) {
+                    getView().saveUserData(user.getToken(), user.getUser().getEmail());
+                }
             }
         });
     }

@@ -1,10 +1,19 @@
 package com.grapeup.parkify.tools;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentActivity;
 
 import com.grapeup.parkify.Constants;
+import com.grapeup.parkify.api.dto.entity.Message;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Pavlo Tymchuk
@@ -25,6 +34,12 @@ public class UserDataHelper {
         return token;
     }
 
+    public static String getToken(Application application) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString(Constants.USER_TOKEN, "");
+        return token;
+    }
+
     public static String getEmail(Activity activity) {
         SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         String email = sharedPref.getString(Constants.USER_EMAIL, "");
@@ -38,8 +53,8 @@ public class UserDataHelper {
         editor.commit();
     }
 
-    public static boolean isUserRegistered(Activity activity) {
-        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+    public static boolean isUserRegistered(ContextWrapper contextWrapper) {
+        SharedPreferences sharedPref = contextWrapper.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(Constants.IS_REGISTERED, false);
     }
 
@@ -53,5 +68,35 @@ public class UserDataHelper {
     public static boolean isRememberLastChoice(Activity activity) {
         SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(Constants.IS_REMEMBER_LAST_CHOICE, false);
+    }
+
+    public static void setLastMessageTime(Application application, long time) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(Constants.LAST_MESSAGE_TIME, time);
+        editor.commit();
+    }
+
+    public static long getLastMessageTime(Application application) {
+        SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getLong(Constants.LAST_MESSAGE_TIME, -1L);
+    }
+
+    //TODO remove
+    public static List<Message> generateMessages() {
+        List<Message> result = new ArrayList<>();
+
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) {
+            Message message = new Message();
+            message.setDate(new Date(2016, 1, 1, 10, 0));
+            message.setRead(false);
+            message.setText("Text" + i);
+            message.setTopic("Topic" + i);
+            message.setType(random.nextInt(3));
+            result.add(message);
+        }
+
+        return result;
     }
 }

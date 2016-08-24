@@ -4,6 +4,7 @@ package com.grapeup.parkify.mvp.messages;
 import com.grapeup.parkify.api.dto.entity.Message;
 import com.grapeup.parkify.api.services.messages.MessageModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.List;
 
@@ -22,6 +23,39 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
         this.token = token;
     }
 
+    @Override
+    public boolean receivedNewMessages(List<Message> messages) {
+        if (application == null) return false;
+
+        long lastMessageTime = UserDataHelper.getLastMessageTime(application);
+        for (Message message : messages) {
+            if (message.getDate().getTime() == lastMessageTime) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int howMuchReceived(List<Message> messages) {
+        if (application == null) return 0;
+
+        int result = messages.size();
+        int index = -1;
+        long lastMessageTime = UserDataHelper.getLastMessageTime(application);
+        for (Message message : messages) {
+            if (message.getDate().getTime() == lastMessageTime) {
+                index = messages.indexOf(message);
+            }
+        }
+
+        if (index > 0) {
+            result = messages.subList(index, messages.size()).size();
+        }
+
+        return result;
+    }
+
     private com.grapeup.parkify.api.services.messages.MessageModel messageModel;
 
     @Override
@@ -34,12 +68,17 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
 
             @Override
             public void onError(Throwable e) {
-                getView().onMessagesReceiveError(e.getMessage());
+                if (isViewAttached()) {
+                    getView().onMessagesReceiveError(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(List<Message> messages) {
-                getView().onMessagesReceived(messages);
+                if (isViewAttached()) {
+                    //TODO create logic for displaying messages
+                    getView().onMessagesReceived(messages);
+                }
             }
         });
     }

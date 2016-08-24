@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.api.dto.entity.Message;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.List;
 
@@ -26,9 +27,8 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     MessagesContract.MessagesPresenter messagesPresenter;
     private MessagesAdapter mMessagesAdapter;
 
-    public static Fragment getInstance(String token) {
+    public static Fragment getInstance() {
         Bundle bundle = new Bundle();
-        bundle.putString("token", token);
         MessagesFragment fragment = new MessagesFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -38,10 +38,11 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
-
         ButterKnife.bind(this, view);
 
-        String token = getArguments().getString("token");
+        //TODO this recycler view should be refreshed
+
+        String token = UserDataHelper.getToken(getActivity());
         messagesPresenter = new MessagesPresenterImpl();
         messagesPresenter.attachView(this);
         messagesPresenter.setToken(token);
@@ -56,7 +57,13 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
 
     @Override
     public void onMessagesReceived(List<Message> messages) {
-        mMessagesAdapter.setMessages(messages);
+        //TODO remove
+        messages = UserDataHelper.generateMessages();
+        if (!messages.isEmpty()) {
+            mMessagesAdapter.setMessages(messages);
+            Message lastMessage = messages.get(messages.size() - 1);
+            UserDataHelper.setLastMessageTime(getActivity().getApplication(), lastMessage.getDate().getTime());
+        }
     }
 
     @Override
