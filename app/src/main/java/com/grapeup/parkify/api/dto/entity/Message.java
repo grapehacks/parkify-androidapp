@@ -28,6 +28,7 @@ public class Message extends BaseDto implements Parcelable {
     private boolean read;
     private Date date;
 
+    public Message(){}
 
     protected Message(Parcel in) {
         text = in.readString();

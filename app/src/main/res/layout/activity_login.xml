@@ -40,18 +40,6 @@
             android:id="@+id/editTextPassword"
             android:hint="@string/password"/>
 
-        <!--<mehdi.sakout.fancybuttons.FancyButton-->
-            <!--fancy:fb_text="@string/login"-->
-            <!--fancy:fb_defaultColor="@color/green"-->
-            <!--fancy:fb_borderWidth="1dp"-->
-            <!--fancy:fb_radius="30dp"-->
-            <!--fancy:fb_textSize="20sp"-->
-            <!--fancy:fb_focusColor="@color/green_light"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/buttonLogin"-->
-            <!--/>-->
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

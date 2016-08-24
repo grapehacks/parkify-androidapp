@@ -1,5 +1,7 @@
 package com.grapeup.parkify.mvp;
 
+import android.app.Application;
+
 /**
  * Base class for presenter
  *
@@ -7,6 +9,17 @@ package com.grapeup.parkify.mvp;
  */
 public abstract class BasePresenter<T extends BaseView> implements Presenter<T> {
     private T mView;
+    protected Application application;
+
+    @Override
+    public void attachApplication(Application application) {
+        this.application = application;
+    }
+
+    @Override
+    public void detachApplication() {
+        this.application = null;
+    }
 
     @Override
     public void attachView(T view) {

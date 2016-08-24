@@ -38,8 +38,9 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
-
         ButterKnife.bind(this, view);
+
+        //TODO this recycler view should be refreshed
 
         String token = UserDataHelper.getToken(getActivity());
         messagesPresenter = new MessagesPresenterImpl();
@@ -56,7 +57,13 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
 
     @Override
     public void onMessagesReceived(List<Message> messages) {
-        mMessagesAdapter.setMessages(messages);
+        //TODO remove
+        messages = UserDataHelper.generateMessages();
+        if (!messages.isEmpty()) {
+            mMessagesAdapter.setMessages(messages);
+            Message lastMessage = messages.get(messages.size() - 1);
+            UserDataHelper.setLastMessageTime(getActivity().getApplication(), lastMessage.getDate().getTime());
+        }
     }
 
     @Override

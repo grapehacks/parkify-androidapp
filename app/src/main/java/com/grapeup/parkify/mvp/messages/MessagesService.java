@@ -30,7 +30,6 @@ public class MessagesService extends IntentService implements MessagesContract.V
     public static final String TAG = MessagesService.class.getSimpleName();
     public static final String ACTION = "com.grapeup.parkify.mvp.messages";
     public static final int REQUEST_CODE = 123321;
-    public static int COUNT = 0;
 
     private final MessagesContract.MessagesPresenter mMessagesPresenter;
     private Intent mIntent;
@@ -50,9 +49,9 @@ public class MessagesService extends IntentService implements MessagesContract.V
 
     public static void setAlarm(Context context, PendingIntent pIntent) {
         // Setup periodic alarm every minute
-        long interval = 60 * 1000;
+        long interval = 10 * 1000;
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), interval, pIntent);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), interval, pIntent);
     }
 
     public static void cancelAlarmForReceivingMessages(Context context) {
@@ -70,6 +69,7 @@ public class MessagesService extends IntentService implements MessagesContract.V
     public void onCreate() {
         super.onCreate();
         mMessagesPresenter.attachView(this);
+        mMessagesPresenter.attachApplication(getApplication());
         String token = UserDataHelper.getToken(getApplication());
         mMessagesPresenter.setToken(token);
     }
@@ -78,8 +78,9 @@ public class MessagesService extends IntentService implements MessagesContract.V
     protected void onHandleIntent(Intent intent) {
         mIntent = intent;
         Log.d(TAG, "Service started.");
-
-        mMessagesPresenter.start();
+        if (UserDataHelper.isUserRegistered(getApplication())) {
+            mMessagesPresenter.start();
+        }
     }
 
     @Override
@@ -89,21 +90,20 @@ public class MessagesService extends IntentService implements MessagesContract.V
 
     @Override
     public void onMessagesReceived(List<Message> messages) {
-        if (receivedNewMessages()) {
-            createNotification(messages);
+        //TODO remove
+        messages = UserDataHelper.generateMessages();
+        if (mMessagesPresenter.receivedNewMessages(messages)) {
+            int count = mMessagesPresenter.howMuchReceived(messages);
+            createNotification(count);
         }
     }
 
-    private boolean receivedNewMessages() {
-        return true;
-    }
-
-    private void createNotification(List<Message> messages) {
+    private void createNotification(int count) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext());
         builder.setSmallIcon(R.drawable.messages);
         builder.setContentTitle(getResources().getString(R.string.app_name));
         String receivedMessagesString = getResources().getString(R.string.received_messages);
-        String formattedString = String.format(receivedMessagesString, "" + (COUNT++) /*messages.size()*/);
+        String formattedString = String.format(receivedMessagesString, "" +count);
         builder.setContentText(formattedString);
         builder.setAutoCancel(true);
 
@@ -113,6 +113,7 @@ public class MessagesService extends IntentService implements MessagesContract.V
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
         // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(MessagesActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(intent);
         PendingIntent resultPendingIntent =
@@ -127,8 +128,8 @@ public class MessagesService extends IntentService implements MessagesContract.V
         // mId allows you to update the notification later on.
         mNotificationManager.notify(0, builder.build());
         Vibrator vibrator = (Vibrator) getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
-        // star wars theme :D
-        vibrator.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);
+        // star wars theme :D //TODO
+        //vibrator.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);
     }
 
     @Override
@@ -146,10 +147,17 @@ public class MessagesService extends IntentService implements MessagesContract.V
     public static class MessagesBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")
-                    || intent.getAction().equals(ACTION)) {
-                Intent i = new Intent(context, MessagesService.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent i = new Intent(context, MessagesService.class);
+            context.startService(i);
+        }
+    }
+
+    public static class MessagesDeviceBootReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+                Intent i = new Intent(context, MessagesBroadcastReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
                 setAlarm(context, pendingIntent);
             }
         }

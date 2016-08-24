@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.api.dto.entity.Message;
 
@@ -24,6 +27,9 @@ import butterknife.ButterKnife;
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_message_icon)
+        ImageView icon;
+
         @BindView(R.id.item_message_title)
         TextView messageTitle;
 
@@ -34,7 +40,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         TextView messageDate;
 
         @BindView(R.id.item_message_layout)
-        LinearLayout messageLayout;
+        RelativeLayout messageLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,20 +84,30 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String stringDate = df.format(message.getDate());
         holder.messageDate.setText(stringDate);
-        switch (message.getType()) {
+
+        int color = getColorByMessageType(message.getType());
+
+        TextDrawable drawable = TextDrawable.builder().buildRound(message.getTopic().substring(0, 1), color);
+        holder.icon.setImageDrawable(drawable);
+    }
+
+    private int getColorByMessageType(int messageType) {
+        int color = 0;
+        switch (messageType) {
             case 0:
-                holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green));
+                color = getContext().getResources().getColor(R.color.green);
                 break;
             case 1:
-                holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.red));
+                color = getContext().getResources().getColor(R.color.red);
                 break;
             case 2:
-                holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_light));
+                color = getContext().getResources().getColor(R.color.green_light);
                 break;
             case 3:
-                holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.red_light));
+                color = getContext().getResources().getColor(R.color.red_light);
                 break;
         }
+        return color;
     }
 
     @Override

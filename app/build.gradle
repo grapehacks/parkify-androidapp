@@ -47,6 +47,7 @@ dependencies {
     }
     compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
     compile 'com.github.markushi:circlebutton:1.1'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     // REST
     compile 'com.google.code.gson:gson:2.7'
