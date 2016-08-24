@@ -1,6 +1,7 @@
 package com.grapeup.parkify.mvp.messages;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
@@ -84,6 +86,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String stringDate = df.format(message.getDate());
         holder.messageDate.setText(stringDate);
+        holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_light));
+
+        holder.messageLayout.setOnClickListener(view -> {
+            TypedArray array = mContext.getTheme().obtainStyledAttributes(new int[] {
+                    android.R.attr.colorBackground,
+            });
+            int backgroundColor = array.getColor(0, 0xFF00FF);
+            view.setBackgroundColor(backgroundColor);
+        });
 
         int color = getColorByMessageType(message.getType());
 
@@ -114,4 +125,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public int getItemCount() {
         return mMessages.size();
     }
+
+
 }

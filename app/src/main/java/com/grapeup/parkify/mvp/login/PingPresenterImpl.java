@@ -4,6 +4,7 @@ import com.grapeup.parkify.api.dto.PingDto;
 import com.grapeup.parkify.api.services.ping.PingModel;
 import com.grapeup.parkify.api.services.ping.PingModelImpl;
 import com.grapeup.parkify.mvp.BasePresenter;
+import com.grapeup.parkify.tools.UserDataHelper;
 
 import rx.Observer;
 
@@ -39,6 +40,7 @@ public class PingPresenterImpl extends BasePresenter<PingView> implements PingPr
             public void onNext(PingDto pingDto) {
                 getView().setNextDrawDate(pingDto.getDate());
                 if (pingDto.getUser() != null) {
+                    UserDataHelper.setUnreadCount(application, pingDto.getUser().getUnreadMessageCounter());
                     getView().tokenIsValid();
                 } else {
                     getView().tokenIsInvalid();

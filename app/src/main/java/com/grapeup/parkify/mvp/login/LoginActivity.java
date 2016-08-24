@@ -38,9 +38,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
         ButterKnife.bind(this);
         mLoginPresenter = new LoginPresenterImpl();
         mLoginPresenter.attachView(this);
+        mLoginPresenter.attachApplication(getApplication());
 
         mPingPresenter = new PingPresenterImpl();
         mPingPresenter.attachView(this);
+        mPingPresenter.attachApplication(getApplication());
     }
 
     @Override

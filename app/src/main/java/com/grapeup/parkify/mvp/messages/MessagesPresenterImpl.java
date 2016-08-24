@@ -13,6 +13,7 @@ import rx.Observer;
 public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> implements MessagesContract.MessagesPresenter{
 
     private String token;
+    private int unreadCount;
 
     public MessagesPresenterImpl() {
         this.messageModel = new MessageModelImpl();
@@ -21,6 +22,11 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
     @Override
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
 
     @Override
     public void start() {
-        messageModel.messages(token).subscribe(new Observer<List<Message>>() {
+        messageModel.messages(token, unreadCount).subscribe(new Observer<List<Message>>() {
             @Override
             public void onCompleted() {
                 if (isViewAttached()) {
@@ -79,6 +85,7 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
             public void onNext(List<Message> messages) {
                 if (isViewAttached()) {
                     //TODO create logic for displaying messages
+                    UserDataHelper.setReceivedCount(application, messages.size());
                     getView().onMessagesReceived(messages);
                 }
             }
