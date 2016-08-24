@@ -51,12 +51,21 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected void initActionBar(){
         setSupportActionBar(toolbar);
-        /*getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.logo);*/
+        if (showBackButton()) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true); // show or hide the default home button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setLogo(getResources().getDrawable(R.drawable.logo));
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+    }
+
+    protected abstract boolean showBackButton();
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override

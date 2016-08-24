@@ -22,8 +22,18 @@ public class MainActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected boolean showBackButton() {
+        return false;
+    }
+
+    @Override
     protected Fragment createFragment() {
         Intent intent = getIntent();
         return MainFragment.getInstance((Date) intent.getSerializableExtra(BUNDLE_DATE));
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
