@@ -56,8 +56,6 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
 
     @Override
     public void onMessagesReceived(List<Message> messages) {
-        //TODO remove
-        //messages = UserDataHelper.generateMessages();
         if (!messages.isEmpty()) {
             mMessagesAdapter.setMessages(messages);
         }

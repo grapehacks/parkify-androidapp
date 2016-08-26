@@ -80,22 +80,4 @@ public class UserDataHelper {
         SharedPreferences sharedPref = application.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         return sharedPref.getInt(Constants.UNREAD_COUNT, -1);
     }
-
-    //TODO remove
-    public static List<Message> generateMessages() {
-        List<Message> result = new ArrayList<>();
-
-        Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            Message message = new Message();
-            message.setDate(new Date(2016, 1, 1, 10, 0));
-            message.setRead(false);
-            message.setText("Text" + i);
-            message.setTopic("Topic" + i);
-            message.setType(random.nextInt(4));
-            result.add(message);
-        }
-
-        return result;
-    }
 }

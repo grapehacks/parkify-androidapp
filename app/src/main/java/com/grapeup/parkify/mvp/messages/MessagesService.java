@@ -50,8 +50,7 @@ public class MessagesService extends IntentService implements PingView {
 
     public static void setAlarm(Context context, PendingIntent pIntent) {
         // Setup periodic alarm every minute
-        //TODO change to 60
-        long interval = 10 * 1000;
+        long interval = 60 * 1000;
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), interval, pIntent);
     }
@@ -97,15 +96,13 @@ public class MessagesService extends IntentService implements PingView {
         builder.setContentText(formattedString);
         builder.setAutoCancel(true);
 
-        Intent intent = new Intent(getBaseContext(), MessagesActivity.class);
-        intent.putExtra(MessagesActivity.ON_FINISH_START_MAIN_ACTIVITY, true);
         // The stack builder object will contain an artificial back stack for the started Activity.
         // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
         // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(MessagesActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(intent);
+        stackBuilder.addNextIntent(MessagesActivity.createIntent(getBaseContext(), true));
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
@@ -118,8 +115,8 @@ public class MessagesService extends IntentService implements PingView {
         // mId allows you to update the notification later on.
         mNotificationManager.notify(0, builder.build());
         Vibrator vibrator = (Vibrator) getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
-        // star wars theme :D //TODO
-        //vibrator.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);
+        // star wars theme :D
+        vibrator.vibrate(new long[]{0, 500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500}, -1);
     }
 
     @Override

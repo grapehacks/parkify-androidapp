@@ -52,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="118dp"
             app:srcCompat="@drawable/logo"
-            android:id="@+id/imageViewParkify"/>
+            android:transitionName="transition_logo"
+            android:id="@+id/logo"/>
 
         <EditText
             android:layout_width="match_parent"

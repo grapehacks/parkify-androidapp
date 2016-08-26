@@ -8,7 +8,6 @@ import com.grapeup.parkify.mvp.BasePresenter;
 import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import rx.Observer;
@@ -44,12 +43,13 @@ public class MessagesPresenterImpl extends BasePresenter<MessagesContract.View> 
             @Override
             public void onNext(List<Message> messages) {
                 if (isViewAttached()) {
-                    getView().onMessagesReceived(getUnreadMessages(messages));
+                    getView().onMessagesReceived(messages);
                 }
             }
         });
     }
 
+    //TODO this method should be working with "only read" setting
     private List<Message> getUnreadMessages(List<Message> messages) {
         // from end of messages list we want to get last unread messages and send to view
         int unreadCount = UserDataHelper.getUnreadCount(application);

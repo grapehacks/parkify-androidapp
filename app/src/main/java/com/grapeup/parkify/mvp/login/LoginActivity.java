@@ -1,36 +1,47 @@
 package com.grapeup.parkify.mvp.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.grapeup.parkify.R;
-import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.mvp.main.MainActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
-
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements LoginView, PingView {
-
+public class LoginActivity extends AppCompatActivity implements LoginView {
+    public static String LOGO_IMAGE = "LoginActivity:logo";
     private LoginPresenter mLoginPresenter;
-    private PingPresenter mPingPresenter;
 
-    @BindView(R.id.editTextUsername)
-    EditText mUsername;
+    @BindView(R.id.editTextUsername) EditText mUsername;
+    @BindView(R.id.editTextPassword) EditText mPassword;
+    @BindView(R.id.buttonLogin) Button mButtonLogin;
+    @BindView(R.id.logo) ImageView mLoginLogo;
 
-    @BindView(R.id.editTextPassword)
-    EditText mPassword;
-    @BindView(R.id.buttonLogin)
-    Button mButtonLogin;
-    private Date date;
+    public static Intent createIntent(Context context) {
+        return new Intent(context, LoginActivity.class);
+    }
+
+    public static void launch(AppCompatActivity activity, View transitionView, String url) {
+        ActivityOptionsCompat options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        activity, transitionView, LOGO_IMAGE);
+        Intent intent = new Intent(activity, LoginActivity.class);
+        intent.putExtra(LOGO_IMAGE, url);
+        ActivityCompat.startActivity(activity, intent, options.toBundle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +52,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
         mLoginPresenter.attachView(this);
         mLoginPresenter.attachApplication(getApplication());
 
-        mPingPresenter = new PingPresenterImpl();
-        mPingPresenter.attachView(this);
-        mPingPresenter.attachApplication(getApplication());
+        ViewCompat.setTransitionName(mLoginLogo, LOGO_IMAGE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPingPresenter.start();
     }
 
     @Override
@@ -65,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
 
     @Override
     public void onLoginSuccess() {
-        startMainActivity();
+        startActivity(MainActivity.createIntent(this));
     }
 
     @Override
@@ -76,38 +84,5 @@ public class LoginActivity extends AppCompatActivity implements LoginView, PingV
     @Override
     public void saveUserData(String token, String email) {
         UserDataHelper.saveUserInfo(this, token, email);
-    }
-
-    @Override
-    public void onPingFailed(String message) {
-        Toast.makeText(this, "Failed to login: " + message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void tokenIsValid(User user) {
-        startMainActivity();
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putSerializable(MainActivity.BUNDLE_DATE, date);
-        intent.putExtras(mBundle);
-        startActivity(intent);
-    }
-
-    @Override
-    public void tokenIsInvalid() {
-        // do nothing
-    }
-
-    @Override
-    public void onPingCompleted() {
-
-    }
-
-    @Override
-    public void setNextDrawDate(Date date) {
-        this.date = date;
     }
 }

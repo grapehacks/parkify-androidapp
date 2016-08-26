@@ -1,6 +1,5 @@
 package com.grapeup.parkify.mvp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -96,8 +95,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     }
 
     private final MenuItem.OnMenuItemClickListener SHOW_MESSAGES_LISTENER = (view) -> {
-        Intent intent = new Intent(SingleFragmentActivity.this, MessagesActivity.class);
-        startActivity(intent);
+        startActivity(MessagesActivity.createIntent(this, false));
         return true;
     };
 
@@ -106,7 +104,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         UserDataHelper.setUnreadCount(SingleFragmentActivity.this, -1);
         UserDataHelper.setRememberLastChoice(SingleFragmentActivity.this, false);
         UserDataHelper.setUserIsRegistered(SingleFragmentActivity.this, false);
-        startActivity(new Intent(SingleFragmentActivity.this, LoginActivity.class));
+        startActivity(LoginActivity.createIntent(this));
         return true;
     };
 

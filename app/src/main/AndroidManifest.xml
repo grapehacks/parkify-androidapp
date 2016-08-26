@@ -35,18 +35,22 @@
             android:name=".mvp.messages.MessagesService"
             android:exported="false" />
 
-        <activity android:name=".mvp.login.LoginActivity"
+        <activity android:name=".mvp.splash.SplashScreen"
             android:screenOrientation="portrait"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".mvp.login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
+
         <activity android:name=".mvp.main.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+
         <activity android:name=".mvp.messages.MessagesActivity"
                   android:screenOrientation="portrait">
             <meta-data

@@ -17,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.User;
+import com.grapeup.parkify.mvp.login.PingPresenter;
+import com.grapeup.parkify.mvp.login.PingPresenterImpl;
+import com.grapeup.parkify.mvp.login.PingView;
 import com.grapeup.parkify.mvp.messages.MessagesService;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -36,9 +40,11 @@ import static android.R.style.Theme_Black_NoTitleBar_Fullscreen;
  *
  * @author Pavlo Tymchuk
  */
-public final class MainFragment extends Fragment implements MainView {
+public final class MainFragment extends Fragment implements MainView, PingView {
     private MainPresenter mMainPresenter;
+    private PingPresenter mPingPresenter;
     private Dialog dialog;
+    private Date date;
 
     @BindView(R.id.date_icon) ImageView dateIcon;
     @BindView(R.id.register_btn) CircleButton registerBtn;
@@ -94,11 +100,8 @@ public final class MainFragment extends Fragment implements MainView {
         }
     }
 
-    public static Fragment getInstance(Date date) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MainActivity.BUNDLE_DATE, date);
+    public static Fragment getInstance() {
         MainFragment fragment = new MainFragment();
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -108,6 +111,11 @@ public final class MainFragment extends Fragment implements MainView {
         mMainPresenter = new MainPresenterImpl();
         mMainPresenter.attachView(this);
         mMainPresenter.attachApplication(getActivity().getApplication());
+
+        mPingPresenter = new PingPresenterImpl();
+        mPingPresenter.attachView(this);
+        mPingPresenter.attachApplication(getActivity().getApplication());
+
         triggerMessagesService();
     }
 
@@ -124,6 +132,7 @@ public final class MainFragment extends Fragment implements MainView {
     public void onResume() {
         super.onResume();
         mMainPresenter.start();
+        mPingPresenter.start();
     }
 
     @Nullable
@@ -139,16 +148,24 @@ public final class MainFragment extends Fragment implements MainView {
         fawCalendarTimesO.colorRes(R.color.black);
         dateIcon.setImageDrawable(fawCalendarTimesO);
 
-        Date date = (Date) getArguments().getSerializable(MainActivity.BUNDLE_DATE);
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        String stringDate = df.format(date);
-        dateText.setText(stringDate);
+        setDate(date);
 
         initializeSynchronizeIcon();
         initializeRegisterBtn();
         initializeIsRegisteredBtn();
 
         return view;
+    }
+
+    private void setDate(Date date) {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String stringDate;
+        if (date != null) {
+            stringDate = df.format(date);
+        } else {
+            stringDate = "";
+        }
+        dateText.setText(stringDate);
     }
 
     private void initializeSynchronizeIcon() {
@@ -214,6 +231,28 @@ public final class MainFragment extends Fragment implements MainView {
     @Override
     public void onUnRegisterFailed(String message) {
         dialog.dismiss();
+    }
+
+    @Override
+    public void onPingFailed(String message) {
+    }
+
+    @Override
+    public void tokenIsValid(User user) {
+    }
+
+    @Override
+    public void tokenIsInvalid() {
+    }
+
+    @Override
+    public void onPingCompleted() {
+    }
+
+    @Override
+    public void setNextDrawDate(Date date) {
+        this.date = date;
+        setDate(date);
     }
 
 }
