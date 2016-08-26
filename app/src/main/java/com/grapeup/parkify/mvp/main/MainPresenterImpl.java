@@ -43,6 +43,8 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
             @Override
             public void onNext(User user) {
                 if (isViewAttached()) {
+                    UserDataHelper.setRememberLastChoice(application, rememberLastChoice);
+                    UserDataHelper.setUserIsRegistered(application, true);
                     getView().userRegistered();
                 }
             }
@@ -69,6 +71,8 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
             @Override
             public void onNext(User user) {
                 if (isViewAttached()) {
+                    UserDataHelper.setRememberLastChoice(application, rememberLastChoice);
+                    UserDataHelper.setUserIsRegistered(application, false);
                     getView().userUnregistered();
                 }
             }

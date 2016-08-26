@@ -10,7 +10,8 @@
     <string name="settings">Ustawienia</string>
     <string name="message">Wiadomości</string>
     <string name="date_of_closest_draw">Data najbliższego losowania</string>
-    <string name="button_result">Zapisano</string>
+    <string name="button_saved">Zapisano</string>
+    <string name="button_not_saved">Nie zapisano</string>
     <string name="want_to_participate">Czy jesteś pewien że chcesz zapisać się na listę osób biorących udział w losowaniu karty parkingowej?</string>
     <string name="always_want_to_be_registered">Zawsze chcę być zapisany</string>
     <string name="dont_want_to_participate">Czy jesteś pewien że chcesz się wypisać z listy osób biorących udział w losowaniu karty parkingowej?</string>

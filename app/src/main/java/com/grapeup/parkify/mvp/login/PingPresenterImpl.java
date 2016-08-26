@@ -43,7 +43,10 @@ public class PingPresenterImpl extends BasePresenter<PingView> implements PingPr
                 getView().setNextDrawDate(pingDto.getDate());
                 User user = pingDto.getUser();
                 if (user != null) {
+                    UserDataHelper.setRememberLastChoice(application, user.isRememberLastChoice());
+                    UserDataHelper.setUserIsRegistered(application, user.getParticipate() == 1);
                     getView().tokenIsValid(user);
+                    UserDataHelper.setUnreadCount(application, user.getUnreadMsgCounter());
                 } else {
                     getView().tokenIsInvalid();
                 }

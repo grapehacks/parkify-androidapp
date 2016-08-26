@@ -45,8 +45,8 @@ public class UserDataHelper {
         return email;
     }
 
-    public static void setUserIsRegistered(Activity activity, boolean isUserRegistered) {
-        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+    public static void setUserIsRegistered(ContextWrapper contextWrapper, boolean isUserRegistered) {
+        SharedPreferences sharedPref = contextWrapper.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.IS_REGISTERED, isUserRegistered);
         editor.commit();
@@ -57,8 +57,8 @@ public class UserDataHelper {
         return sharedPref.getBoolean(Constants.IS_REGISTERED, false);
     }
 
-    public static void setRememberLastChoice(Activity activity, boolean isRememberLastChoice) {
-        SharedPreferences sharedPref = activity.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+    public static void setRememberLastChoice(ContextWrapper contextWrapper, boolean isRememberLastChoice) {
+        SharedPreferences sharedPref = contextWrapper.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.IS_REMEMBER_LAST_CHOICE, isRememberLastChoice);
         editor.commit();

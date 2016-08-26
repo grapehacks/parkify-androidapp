@@ -137,7 +137,6 @@ public class MessagesService extends IntentService implements PingView {
 
         if (unreadMessageCounter > 0 && savedUnreadCount != unreadMessageCounter) {
             createNotification(unreadMessageCounter);
-            UserDataHelper.setUnreadCount(getApplication(), unreadMessageCounter);
         }
     }
 

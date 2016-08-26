@@ -74,7 +74,6 @@ public final class MainFragment extends Fragment implements MainView, PingView {
         buttonYes.setOnClickListener((butYes) -> {
             boolean isRemember = rememberLastChoice.isChecked();
             toggleSynchronizedIcon(isRemember);
-            UserDataHelper.setRememberLastChoice(getActivity(), isRemember);
             if (!isUserRegistered) {
                 mMainPresenter.register(isRemember);
             } else {
@@ -143,18 +142,25 @@ public final class MainFragment extends Fragment implements MainView, PingView {
 
         dialog = new Dialog(getActivity(), Theme_Black_NoTitleBar_Fullscreen);
 
+        initializeViews();
+
+        return view;
+    }
+
+    private void initializeViews() {
+        initializeDate();
+        initializeSynchronizeIcon();
+        initializeRegisterBtn();
+        initializeIsRegisteredBtn();
+    }
+
+    private void initializeDate() {
         IconicsDrawable fawCalendarTimesO = new IconicsDrawable(getContext(), "faw_calendar_times_o");
         fawCalendarTimesO.sizeDp(36);
         fawCalendarTimesO.colorRes(R.color.black);
         dateIcon.setImageDrawable(fawCalendarTimesO);
 
         setDate(date);
-
-        initializeSynchronizeIcon();
-        initializeRegisterBtn();
-        initializeIsRegisteredBtn();
-
-        return view;
     }
 
     private void setDate(Date date) {
@@ -180,8 +186,12 @@ public final class MainFragment extends Fragment implements MainView, PingView {
         Drawable backgroundIsUserRegistered;
         if (UserDataHelper.isUserRegistered(getActivity())) {
             backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_saved);
+            isUserRegistered.setText(getString(R.string.button_saved));
+
         } else {
             backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_notsaved);
+            isUserRegistered.setText(getString(R.string.button_not_saved));
+
         }
         isUserRegistered.setBackground(backgroundIsUserRegistered);
     }
@@ -201,26 +211,21 @@ public final class MainFragment extends Fragment implements MainView, PingView {
         registerBtn.setOnClickListener(REGISTER_BTN_LISTENER);
     }
 
-    @Override
-    public void userRegistered() {
-        registerBtn.setColor(getResources().getColor(R.color.green));
-        Drawable backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_saved);
-        isUserRegistered.setBackground(backgroundIsUserRegistered);
-        UserDataHelper.setUserIsRegistered(getActivity(), true);
+    private void refreshState() {
+        initializeViews();
         dialog.dismiss();
 
         triggerMessagesService();
     }
 
     @Override
-    public void userUnregistered() {
-        registerBtn.setColor(getResources().getColor(R.color.red));
-        Drawable backgroundIsUserRegistered = getResources().getDrawable(R.drawable.button_notsaved);
-        isUserRegistered.setBackground(backgroundIsUserRegistered);
-        UserDataHelper.setUserIsRegistered(getActivity(), false);
-        dialog.dismiss();
+    public void userRegistered() {
+        refreshState();
+    }
 
-        triggerMessagesService();
+    @Override
+    public void userUnregistered() {
+        refreshState();
     }
 
     @Override
@@ -239,6 +244,7 @@ public final class MainFragment extends Fragment implements MainView, PingView {
 
     @Override
     public void tokenIsValid(User user) {
+        refreshState();
     }
 
     @Override

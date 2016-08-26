@@ -17,7 +17,7 @@
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="280dp"
-            app:cb_color="#ca7d7d"
+            app:cb_color="#BDBDBD"
             app:cb_pressedRingWidth="8dip"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -90,10 +90,9 @@
                 android:id="@+id/is_user_registered_btn"
                 android:layout_width="175dp"
                 android:layout_height="wrap_content"
-                android:text="@string/button_result"
                 android:layout_centerInParent="true"
                 android:layout_below="@id/date_layout"
-                android:background="@drawable/button_notsaved"/>
+                android:background="@drawable/button_initialized"/>
         </RelativeLayout>
 
     </LinearLayout>
