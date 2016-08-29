@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -23,13 +22,13 @@ import com.grapeup.parkify.mvp.login.PingPresenterImpl;
 import com.grapeup.parkify.mvp.login.PingView;
 import com.grapeup.parkify.mvp.messages.MessagesService;
 import com.grapeup.parkify.tools.UserDataHelper;
+import com.grapeup.parkify.tools.widgets.CircleButton;
 import com.mikepenz.iconics.IconicsDrawable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import at.markushi.ui.CircleButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -50,8 +49,6 @@ public final class MainFragment extends Fragment implements MainView, PingView {
     @BindView(R.id.register_btn) CircleButton registerBtn;
     @BindView(R.id.date_text) TextView dateText;
     @BindView(R.id.is_user_registered_btn) Button isUserRegistered;
-    @BindView(R.id.synchronized_image) ImageView synchronizedIcon;
-
 
     public View.OnClickListener REGISTER_BTN_LISTENER = (v) -> {
         // Get the root inflator.
@@ -91,11 +88,9 @@ public final class MainFragment extends Fragment implements MainView, PingView {
 
     private void toggleSynchronizedIcon(boolean isRemember) {
         if (isRemember) {
-            synchronizedIcon.setVisibility(View.VISIBLE);
-            synchronizedIcon.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+            registerBtn.showSynchronization();
         } else {
-            synchronizedIcon.setVisibility(View.GONE);
-            synchronizedIcon.setAnimation(null);
+            registerBtn.hideSynchronization();
         }
     }
 
@@ -149,7 +144,7 @@ public final class MainFragment extends Fragment implements MainView, PingView {
 
     private void initializeViews() {
         initializeDate();
-        initializeSynchronizeIcon();
+        toggleSynchronizedIcon(UserDataHelper.isRememberLastChoice(getActivity()));
         initializeRegisterBtn();
         initializeIsRegisteredBtn();
     }
@@ -175,11 +170,6 @@ public final class MainFragment extends Fragment implements MainView, PingView {
     }
 
     private void initializeSynchronizeIcon() {
-        IconicsDrawable fawRefresh = new IconicsDrawable(getContext(), "faw_refresh");
-        fawRefresh.sizeDp(48);
-        fawRefresh.colorRes(R.color.black);
-        synchronizedIcon.setImageDrawable(fawRefresh);
-        toggleSynchronizedIcon(UserDataHelper.isRememberLastChoice(getActivity()));
     }
 
     private void initializeIsRegisteredBtn() {
