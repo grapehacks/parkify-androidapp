@@ -23,13 +23,13 @@ import com.grapeup.parkify.mvp.login.PingPresenterImpl;
 import com.grapeup.parkify.mvp.login.PingView;
 import com.grapeup.parkify.mvp.messages.MessagesService;
 import com.grapeup.parkify.tools.UserDataHelper;
+import com.grapeup.parkify.tools.widgets.CircleButton;
 import com.mikepenz.iconics.IconicsDrawable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import at.markushi.ui.CircleButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
