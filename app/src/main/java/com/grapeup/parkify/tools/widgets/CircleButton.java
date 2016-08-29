@@ -153,6 +153,8 @@ public class CircleButton extends ImageView {
 
 	public void showSynchronization(){
 		showSynchronization = true;
+		synchronizationAngle = 0;
+		smallIconAnimator.cancel();
 		smallIconAnimator.setFloatValues(synchronizationAngle, 180f);
 		smallIconAnimator.setRepeatCount(ValueAnimator.INFINITE);
 		smallIconAnimator.start();
@@ -161,7 +163,6 @@ public class CircleButton extends ImageView {
 
 	public void hideSynchronization() {
 		showSynchronization = false;
-		synchronizationAngle = 0;
 		smallIconAnimator.setFloatValues(synchronizationAngle, 0f);
 		smallIconAnimator.cancel();
 		smallCircleIcon.invalidateSelf();
