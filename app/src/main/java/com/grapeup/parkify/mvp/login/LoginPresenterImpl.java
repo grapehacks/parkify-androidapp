@@ -12,8 +12,8 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
 
     private LoginModel loginModel;
 
-    public LoginPresenterImpl() {
-        loginModel = new LoginModelImpl();
+    public LoginPresenterImpl(LoginModel model) {
+        loginModel = model;
     }
 
     @Override

@@ -26,14 +26,32 @@ public class User extends BaseDto implements Parcelable {
     @SerializedName("_id")
     @Expose
     private String id;
+    @SerializedName("email")
+    @Expose
     private String email;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("numberOfAttempts")
+    @Expose
     private int numberOfAttempts;
+    @SerializedName("numberOfWins")
+    @Expose
     private int numberOfWins;
+    @SerializedName("unreadMsgCounter")
+    @Expose
     private int unreadMsgCounter;
+    @SerializedName("removed")
+    @Expose
     private boolean removed;
+    @SerializedName("rememberLastChoice")
+    @Expose
     private boolean rememberLastChoice;
+    @SerializedName("participate")
+    @Expose
     private int participate;
+    @SerializedName("type")
+    @Expose
     private int type;
 
     protected User(Parcel in) {

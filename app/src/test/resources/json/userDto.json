@@ -1,0 +1,17 @@
+{
+  "message": "Auth succeeded",
+  "user": {
+    "name": "fake_name",
+    "email": "fake@mail.com",
+    "_id": "57c03248e494635646d0b572",
+    "__v": 0,
+    "numberOfAttempts": 2,
+    "numberOfWins": 1,
+    "unreadMsgCounter": 10,
+    "removed": false,
+    "rememberLastChoice": false,
+    "participate": 1,
+    "type": 0
+  },
+  "token": "fake_token"
+}
