@@ -23,7 +23,7 @@ public class UserDto extends BaseDto implements Parcelable {
         }
     };
 
-    @SerializedName("items")
+    @SerializedName("message")
     @Expose
     private String message;
     @SerializedName("token")

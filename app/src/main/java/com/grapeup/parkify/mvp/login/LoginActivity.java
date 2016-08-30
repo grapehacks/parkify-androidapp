@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.services.login.LoginModelImpl;
 import com.grapeup.parkify.mvp.main.MainActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        mLoginPresenter = new LoginPresenterImpl();
+        mLoginPresenter = new LoginPresenterImpl(new LoginModelImpl());
         mLoginPresenter.attachView(this);
         mLoginPresenter.attachApplication(getApplication());
 
