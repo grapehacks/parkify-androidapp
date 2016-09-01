@@ -14,6 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.tools.GraphicsHelper;
 import com.mikepenz.iconics.IconicsDrawable;
 
 public class CircleButton extends ImageView {
@@ -68,7 +69,12 @@ public class CircleButton extends ImageView {
 
 		smallCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		smallCirclePaint.setStyle(Paint.Style.FILL);
-		smallCirclePaint.setColor(getResources().getColor(R.color.defaultBackground));
+		TypedArray array = context.getTheme().obtainStyledAttributes(new int[] {
+				android.R.attr.colorBackground
+		});
+		int backgroundColor = array.getColor(0, 0xFF00FF);
+		array.recycle();
+		smallCirclePaint.setColor(backgroundColor);
 
 		smallCircleIcon = new IconicsDrawable(getContext(), "faw_refresh"){
 			public Rect bounds = new Rect();
@@ -196,8 +202,8 @@ public class CircleButton extends ImageView {
 
 
 		canvas.drawCircle((int)x, (int)y, smallCircleRadius, smallCirclePaint);
-		int smallCirclePadding = 25;
-		smallCircleIcon.sizeDp(smallCircleRadius - smallCirclePadding);
+		int smallCirclePadding = GraphicsHelper.dpToPx(getContext(), 15);
+		smallCircleIcon.sizePx(smallCircleRadius - smallCirclePadding);
 		smallCircleIcon.color(circlePaint.getColor());
 		int left = (int) x - smallCircleRadius + smallCirclePadding;
 		int top = (int) y - smallCircleRadius + smallCirclePadding;
