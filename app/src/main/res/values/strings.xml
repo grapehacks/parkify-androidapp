@@ -18,4 +18,7 @@
     <string name="unregistered_for_ever">Wypisz mnie na zawsze</string>
     <string name="received_messages">Otrzymałeś \'%1$s\' wiadomości!</string>
     <string name="powered_by">Powered by</string>
+    <string name="dialog_logout">Czy na pewno chcesz się wylogować?</string>
+    <string name="dialog_positive_btn">Tak</string>
+    <string name="dialog_negative_btn">Nie</string>
 </resources>

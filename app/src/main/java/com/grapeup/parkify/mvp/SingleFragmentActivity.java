@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -31,6 +32,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    public AlertDialog mLogOutDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,27 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         }
 
         initActionBar();
+        initLogOutDialog();
+    }
+
+    private void initLogOutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_logout);
+        builder.setPositiveButton(R.string.dialog_positive_btn, (dialog, v2) -> {
+
+            UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
+            UserDataHelper.setUnreadCount(SingleFragmentActivity.this, -1);
+            UserDataHelper.setRememberLastChoice(SingleFragmentActivity.this, false);
+            UserDataHelper.setUserIsRegistered(SingleFragmentActivity.this, false);
+            dialog.dismiss();
+
+            finish();
+            startActivity(LoginActivity.createIntent(this));
+        });
+        builder.setNegativeButton(R.string.dialog_negative_btn, (dialog, v1) -> {
+        });
+        builder.setCancelable(false);
+        mLogOutDialog = builder.create();
     }
 
     protected void initActionBar(){
@@ -83,7 +106,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         fawCommenting.colorRes(R.color.black);
         messages.setIcon(fawCommenting);
         messages.setOnMenuItemClickListener(SHOW_MESSAGES_LISTENER);
-                
+
         MenuItem logout = menu.findItem(R.id.menu_logout);
         IconicsDrawable fawSignOut = new IconicsDrawable(this, "faw_sign_out");
         fawSignOut.sizeDp(48);
@@ -99,11 +122,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     };
 
     private final MenuItem.OnMenuItemClickListener SIGN_OUT_LISTENER = (view) -> {
-        UserDataHelper.saveUserInfo(SingleFragmentActivity.this, "", "");
-        UserDataHelper.setUnreadCount(SingleFragmentActivity.this, -1);
-        UserDataHelper.setRememberLastChoice(SingleFragmentActivity.this, false);
-        UserDataHelper.setUserIsRegistered(SingleFragmentActivity.this, false);
-        startActivity(LoginActivity.createIntent(this));
+        mLogOutDialog.show();
         return true;
     };
 
