@@ -71,13 +71,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         toolbar.inflateMenu(R.menu.menu_main);
 
-        MenuItem logout = menu.findItem(R.id.menu_logout);
-        IconicsDrawable fawSignOut = new IconicsDrawable(this, "faw_sign_out");
-        fawSignOut.sizeDp(48);
-        fawSignOut.colorRes(R.color.black);
-        logout.setIcon(fawSignOut);
-        logout.setOnMenuItemClickListener(SIGN_OUT_LISTENER);
-
         /*MenuItem settings = menu.findItem(R.id.menu_settings);
         IconicsDrawable fawCon = new IconicsDrawable(this, "faw_cog");
         fawCon.sizeDp(48);
@@ -90,7 +83,13 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         fawCommenting.colorRes(R.color.black);
         messages.setIcon(fawCommenting);
         messages.setOnMenuItemClickListener(SHOW_MESSAGES_LISTENER);
-
+                
+        MenuItem logout = menu.findItem(R.id.menu_logout);
+        IconicsDrawable fawSignOut = new IconicsDrawable(this, "faw_sign_out");
+        fawSignOut.sizeDp(48);
+        fawSignOut.colorRes(R.color.black);
+        logout.setIcon(fawSignOut);
+        logout.setOnMenuItemClickListener(SIGN_OUT_LISTENER);
         return true;
     }
 
