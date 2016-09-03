@@ -42,7 +42,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         TextView messageDate;
 
         @BindView(R.id.item_message_layout)
-        RelativeLayout messageLayout;
+        LinearLayout messageLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);

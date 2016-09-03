@@ -21,4 +21,5 @@
     <string name="dialog_logout">Czy na pewno chcesz się wylogować?</string>
     <string name="dialog_positive_btn">Tak</string>
     <string name="dialog_negative_btn">Nie</string>
+    <string name="icon">icon</string>
 </resources>
