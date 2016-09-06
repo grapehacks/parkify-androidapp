@@ -1,5 +1,8 @@
 package com.grapeup.parkify.mvp;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -101,7 +104,13 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         settings.setIcon(fawCon);*/
 
         MenuItem messages = menu.findItem(R.id.menu_messages);
-        IconicsDrawable fawCommenting = new IconicsDrawable(this, "faw_commenting");
+        IconicsDrawable fawCommenting = new IconicsDrawable(this, "faw_commenting"){
+            @Override
+            public void draw(Canvas canvas) {
+                super.draw(canvas);
+                createCircleWithMessagesCount(canvas, this);
+            }
+        };
         fawCommenting.sizeDp(48);
         fawCommenting.colorRes(R.color.black);
         messages.setIcon(fawCommenting);
@@ -114,6 +123,17 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         logout.setIcon(fawSignOut);
         logout.setOnMenuItemClickListener(SIGN_OUT_LISTENER);
         return true;
+    }
+
+    private void createCircleWithMessagesCount(Canvas canvas, IconicsDrawable drawable) {
+        Rect bounds = drawable.getBounds();
+        int width = bounds.width();
+        int height = bounds.height();
+
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(getResources().getColor(R.color.red_light));
+        canvas.drawCircle(width - width / 3, height / 3, width / 4, paint);
     }
 
     private final MenuItem.OnMenuItemClickListener SHOW_MESSAGES_LISTENER = (view) -> {
