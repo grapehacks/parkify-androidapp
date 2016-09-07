@@ -129,6 +129,15 @@ public final class MainFragment extends Fragment implements MainView, PingView {
         mPingPresenter.start();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMainPresenter.detachView();
+        mMainPresenter.detachApplication();
+        mPingPresenter.detachView();
+        mPingPresenter.detachApplication();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,7 +22,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
@@ -86,7 +84,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String stringDate = df.format(message.getDate());
         holder.messageDate.setText(stringDate);
-        holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
+        if (!message.isRead()) {
+            holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
+        }
 
         holder.messageLayout.setOnClickListener(view -> {
             mPresenter.readMessage(message, new MessagesContract.MessageReadResultHandler() {
