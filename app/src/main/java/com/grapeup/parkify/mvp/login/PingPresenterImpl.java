@@ -22,14 +22,12 @@ public class PingPresenterImpl extends BasePresenter<PingView> implements PingPr
 
     @Override
     public void start() {
-        if(!isApplicationAttached()) return;
+        if(!isApplicationAttached() || !isViewAttached()) return;
 
         String token = UserDataHelper.getToken(application);
         mPingModel.ping(token).subscribe(new Observer<PingDto>() {
             @Override
             public void onCompleted() {
-                if (!isViewAttached()) return;
-
                 getView().onPingCompleted();
             }
 
