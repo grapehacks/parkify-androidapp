@@ -21,9 +21,7 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Light"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:layout_collapseMode="pin">
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>

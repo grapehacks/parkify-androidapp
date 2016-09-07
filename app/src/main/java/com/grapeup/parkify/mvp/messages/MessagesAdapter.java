@@ -3,12 +3,14 @@ package com.grapeup.parkify.mvp.messages;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -38,6 +40,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         @BindView(R.id.item_message_date)
         TextView messageDate;
+
+        @BindView(R.id.options)
+        ImageView options;
 
         @BindView(R.id.item_message_layout)
         LinearLayout messageLayout;
@@ -86,25 +91,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         holder.messageDate.setText(stringDate);
         if (!message.isRead()) {
             holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
-        }
-
-        holder.messageLayout.setOnClickListener(view -> {
-            mPresenter.readMessage(message, new MessagesContract.MessageReadResultHandler() {
-                @Override
-                public void success() {
-                    TypedArray array = mContext.getTheme().obtainStyledAttributes(new int[] {
-                            android.R.attr.colorBackground,
-                    });
-                    int backgroundColor = array.getColor(0, 0xFF00FF);
-                    view.setBackgroundColor(backgroundColor);
-                }
-
-                @Override
-                public void failed(Throwable e) {
-                    holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
-                }
+            holder.options.setVisibility(View.VISIBLE);
+            holder.options.setOnClickListener(v -> {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                popupMenu.inflate(R.menu.menu_message_options);
+                popupMenu.setOnMenuItemClickListener(new OptionsItemClickListener(getContext(), mPresenter, holder, message));
+                popupMenu.show();
             });
-        });
+        }
 
         int color = getColorByMessageType(message.getType());
 
@@ -137,4 +131,41 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
 
+    private class OptionsItemClickListener implements PopupMenu.OnMenuItemClickListener {
+        private final Context mContext;
+        private final MessagesContract.MessagesPresenter mPresenter;
+        private final ViewHolder holder;
+        private Message message;
+
+        public OptionsItemClickListener(Context context, MessagesContract.MessagesPresenter presenter, ViewHolder holder, Message message) {
+            mContext = context;
+            mPresenter = presenter;
+            this.holder = holder;
+            this.message = message;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_mark_as_read:
+                    mPresenter.readMessage(message, new MessagesContract.MessageReadResultHandler() {
+                        @Override
+                        public void success() {
+                            TypedArray array = mContext.getTheme().obtainStyledAttributes(new int[]{
+                                    android.R.attr.colorBackground,
+                            });
+                            int backgroundColor = array.getColor(0, 0xFF00FF);
+                            holder.messageLayout.setBackgroundColor(backgroundColor);
+                        }
+
+                        @Override
+                        public void failed(Throwable e) {
+                            holder.messageLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_lighter));
+                        }
+                    });
+                    break;
+            }
+            return true;
+        }
+    }
 }
