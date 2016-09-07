@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.grapeup.parkify.R;
 import com.grapeup.parkify.api.dto.entity.Message;
-import com.grapeup.parkify.tools.UserDataHelper;
 
 import java.util.List;
 
@@ -34,18 +33,33 @@ public class MessagesFragment extends Fragment implements MessagesContract.View 
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        messagesPresenter = new MessagesPresenterImpl();
+        messagesPresenter.attachView(this);
+        messagesPresenter.attachApplication(getActivity().getApplication());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //TODO this recycler view should be refreshed
+        messagesPresenter.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        messagesPresenter.detachView();
+        messagesPresenter.detachApplication();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
         ButterKnife.bind(this, view);
-
-        //TODO this recycler view should be refreshed
-
-        messagesPresenter = new MessagesPresenterImpl();
-        messagesPresenter.attachView(this);
-        messagesPresenter.attachApplication(getActivity().getApplication());
-        messagesPresenter.start();
 
         mMessagesAdapter = new MessagesAdapter(getActivity(), messagesPresenter);
         messagesRecyclerView.setAdapter(mMessagesAdapter);

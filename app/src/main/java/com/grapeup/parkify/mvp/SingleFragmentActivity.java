@@ -1,6 +1,7 @@
 package com.grapeup.parkify.mvp;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -16,10 +17,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.grapeup.parkify.R;
+import com.grapeup.parkify.api.dto.entity.User;
 import com.grapeup.parkify.mvp.login.LoginActivity;
+import com.grapeup.parkify.mvp.login.PingPresenter;
+import com.grapeup.parkify.mvp.login.PingPresenterImpl;
+import com.grapeup.parkify.mvp.login.PingView;
 import com.grapeup.parkify.mvp.messages.MessagesActivity;
 import com.grapeup.parkify.tools.UserDataHelper;
 import com.mikepenz.iconics.IconicsDrawable;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,19 +36,25 @@ import butterknife.ButterKnife;
  *
  * @author Pavlo Tymchuk
  */
-public abstract class SingleFragmentActivity extends AppCompatActivity {
+public abstract class SingleFragmentActivity extends AppCompatActivity implements PingView {
     private static String TAG = "FRAGMENT_TAG";
     public FragmentManager mFragmentManager;
+    private PingPresenter mPingPresenter;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     public AlertDialog mLogOutDialog;
+    public int unreadMessages = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
+
+        mPingPresenter = new PingPresenterImpl();
+        mPingPresenter.attachView(this);
+        mPingPresenter.attachApplication(getApplication());
 
         mFragmentManager = getSupportFragmentManager();
         Fragment fragment = mFragmentManager.findFragmentByTag(TAG);
@@ -94,6 +107,20 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+        mPingPresenter.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPingPresenter.detachView();
+        mPingPresenter.detachApplication();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         toolbar.inflateMenu(R.menu.menu_main);
 
@@ -108,7 +135,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
             @Override
             public void draw(Canvas canvas) {
                 super.draw(canvas);
-                createCircleWithMessagesCount(canvas, this);
+                if (hasMessagesToRead()) {
+                    createCircleWithMessagesCount(canvas, this);
+                }
             }
         };
         fawCommenting.sizeDp(48);
@@ -125,15 +154,32 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean hasMessagesToRead() {
+        return this.unreadMessages > 0;
+    }
+
     private void createCircleWithMessagesCount(Canvas canvas, IconicsDrawable drawable) {
         Rect bounds = drawable.getBounds();
         int width = bounds.width();
         int height = bounds.height();
 
-
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(getResources().getColor(R.color.red_light));
-        canvas.drawCircle(width - width / 3, height / 3, width / 4, paint);
+        float radius = width / 4;
+        float cx = width - radius;
+        float cy = height / 4;
+        canvas.drawCircle(cx, cy, radius, paint);
+
+        String text = String.valueOf(unreadMessages);
+        Rect r = new Rect();
+        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(radius);
+        paint.getTextBounds(text, 0, text.length(), r);
+        float x = cx + radius / 4f - r.width() / 2f - r.left;
+        float y = cy + radius / 4f + r.height() / 2f - r.bottom;
+        canvas.drawText(text, x, y, textPaint);
     }
 
     private final MenuItem.OnMenuItemClickListener SHOW_MESSAGES_LISTENER = (view) -> {
@@ -162,4 +208,28 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     }
 
     protected abstract Fragment createFragment();
+
+    @Override
+    public void onPingFailed(String message) {
+    }
+
+    @Override
+    public void setNextDrawDate(Date date) {
+    }
+
+    @Override
+    public void tokenIsValid(User user) {
+        unreadMessages = user.getUnreadMsgCounter();
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void tokenIsInvalid() {
+        finish();
+        startActivity(LoginActivity.createIntent(this));
+    }
+
+    @Override
+    public void onPingCompleted() {
+    }
 }
